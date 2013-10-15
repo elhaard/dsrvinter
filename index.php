@@ -23,7 +23,7 @@ header('Content-Type: text/html; charset=iso-8859-1');
 <p>Hvis du ikke nåede at få dig tilmeldt, så er der ikke så meget andet at gøre end at vente og se, hvilken båd du er kommet på.</p>
 -->
 
-<p>Her kan du tilmelde dig vintervedligehold for 2012:</p>
+<p>Her kan du tilmelde dig vintervedligehold:</p>
 <p>Husk at udfylde alle oplysninger: navn, adresse, medlemsnummer, mailadresse, telefonnummer med mere. <br />
 Alle disse oplysninger bruges til at danne de lister som b&aring;dform&aelig;ndene får udleveret med deres hold. <br />
 Det er derfor vigtigt, at man indtaster de korrekte data. <br />

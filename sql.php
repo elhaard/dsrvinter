@@ -9,9 +9,9 @@ function print_array(&$a) {
 }
 
 function sql_connect() {
-  $link = mysql_connect("localhost", "dsrvinter", "6W2nAsT4S8tV")
+  $link = mysql_connect("localhost", "tlb", "RFrdGPwbz5SzTsMe")
     or exit("Could not connect to database (from __FILE__)");
-  mysql_select_db("dsrvinter2013",$link);
+  mysql_select_db("tlb_dsrvinter2013",$link);
   return $link;
 }
 

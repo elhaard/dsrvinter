@@ -3,9 +3,9 @@
 
 $mail_content="Hej roer\n\n".
     "For at ønske et bådhold skal du bruge nedenstående link:\n".
-    "www.dsr-event.dk/vinter/tilmeld3.php?email=$email&kode=$kode\n\n".
+    "dsr.web7.it-kartellet.dk/tilmeld3.php?email=$email&kode=$kode\n\n".
     "Hvis linket ikke virker skal du gå til siden:\n".
-    "www.dsr-event.dk/vinter/tilmeld3.php og indtaste\n".
+    "dsr.web7.it-kartellet.dk/vinter/tilmeld3.php og indtaste\n".
     "    Login $email\n".
     "    Kode $kode\n\n".
     "Har du problemer med at logge ind, så prøv at bestil en ny kode.\n\n".
@@ -17,10 +17,10 @@ $mail_content="Hej roer\n\n".
 $mail_subject="Tilmelding til DSR vintervedligehold\n";
 
 $mail_headers=array();
-$mail_headers['From'] = "DSR Materieludvalg - svar ikke! <no-reply@dsr-butik.dk>";
+$mail_headers['From'] = "DSR Materieludvalg - svar ikke! <no-reply@dsr.web7.it-kartellet.dk>";
 $mail_headers['Content-Transfer-Encoding'] = "8bit";
 $mail_headers['Date'] = "".date('r');
-$mail_headers['Message-ID'] = "<".sha1(microtime(true))."@dsr-butik.dk>";
+$mail_headers['Message-ID'] = "<".sha1(microtime(true))."@dsr.web7.it-kartellet.dk>";
 $mail_headers['MIME-Version'] = "1.0";
 $mail_headers['X-Mailer'] = "PHP-Custom";
 $mail_headers['Subject'] = "$mail_subject";
