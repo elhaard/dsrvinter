@@ -1,0 +1,49 @@
+h2 { 
+  font-family: helvetica;
+  font-size: 26px;
+  color: #000033;
+  background-color: #99ccff;
+}
+
+h3 { 
+  font-family: helvetica;
+  font-size: 16px;
+  color: #99ccff;
+  background-color: #000033;
+ }
+
+p { 
+  font-family: helvetica;
+  font-size: 16px;
+ }
+
+li { 
+  font-family: helvetica;
+  font-size: 16px;
+
+ }
+
+td { 
+font-family: helvetica;
+  font-size: 16px;
+ }
+
+input { 
+  font-family: courier,helvetica;
+  font-weight: bold;
+  font-size: 20px;
+  color: #0000aa;
+
+}
+
+option { 
+  font-family: courier;
+  font-size: 20px;
+  color: #0000aa;
+ }
+
+.optaget { 
+  font-family: helvetica;
+  font-size: 20px;
+  color: #aa0000;
+}
