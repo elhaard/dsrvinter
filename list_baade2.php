@@ -1,5 +1,3 @@
-
-
 <?php
 include_once("header.php");
 ?>
@@ -18,15 +16,15 @@ function fold(obj) {
 </script>
 
 <?php
-echo "<h2>Oversigt over både og tilmeldinger</h2>\n";
-echo "<p>Klik på bådnavnet for at se tilmeldte...</p>\n";
+echo "<h2>Oversigt over bÃ¥de og tilmeldinger</h2>\n";
+echo "<p>Klik pÃ¥ bÃ¥dnavnet for at se tilmeldte...</p>\n";
 
-$baad_sql="SELECT * FROM `dsr_vinter_baad` where `ID`>0 ORDER BY `dsr_vinter_baad`.`type` ASC";
+$baad_sql="SELECT * FROM `dsr_vinter_baad` where `ID`>0 ORDER BY `dsr_vinter_baad`.`navn` ASC";
 $baad_res=mysql_query($baad_sql, $link);
 
 $count_sql="SELECT count( * ) FROM `dsr_vinter_person` WHERE `medlemnr` >0 AND `baad` >0";
 $count_res=mysql_fetch_row(mysql_query($count_sql,$link));
-echo "<p>Der er i øjeblikket $count_res[0] tilmeldte.</p>\n";
+echo "<p>Der er i Ã¸jeblikket $count_res[0] tilmeldte.</p>\n";
 
 echo "<ul>\n";
 

@@ -4,9 +4,9 @@ include_once("header.php");
 $pers_sql="SELECT `baad` , count( * ) FROM `dsr_vinter_person` WHERE `medlemnr` >0 AND `baad` >0 GROUP BY baad ORDER BY `dsr_vinter_person`.`baad` ASC";
 $pers_res=mysql_query($pers_sql,$link);
 //$pers_row=mysql_fetch_row($pers_res);
-echo "<p>I tabellen herunder bør de <b>fede</b>kolonner være identiske. Den til venstre er hvormange der ER tilmeldt båden. Den til højre, er hvormange systemet tror der er tilmeldt. Er der en fejl, så sig til, så fixer jeg.</p>\n";
+echo "<p>I tabellen herunder bÃ¸r de <b>fede</b>kolonner vÃ¦re identiske. Den til venstre er hvormange der ER tilmeldt bÃ¥den. Den til hÃ¸jre, er hvormange systemet tror der er tilmeldt. Er der en fejl, sÃ¥ sig til, sÃ¥ fixer jeg.</p>\n";
 echo "<table border='1'>\n";
-echo "<tr><td>Båd ID</td><td>Faktisk</td><td>Navn</td><td>Tilmeldte?</td><td>Max</td></tr>\n";
+echo "<tr><td>BÃ¥d ID</td><td>Faktisk</td><td>Navn</td><td>Tilmeldte?</td><td>Max</td></tr>\n";
 while($pers_row=mysql_fetch_row($pers_res)) {
   $baad_sql="select `ID`, `navn`,`tilmeldte`, `antal` from `dsr_vinter_baad` where `ID`=$pers_row[0] ";
   $baad_res=mysql_query($baad_sql,$link);

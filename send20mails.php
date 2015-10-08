@@ -13,7 +13,7 @@ if (isset($_GET["til"])) {
     unset($sent);
     flush();
   }
-  mail($to,"Det her er den sidste mail","Du skulle gerne have fået en række fortløbende mails..? Hvis du har, så virker lortet sgu. Hvis ikke, så er der noget galt!\n","From: no-reply@kbnielsen.dk");
+  mail($to,"Det her er den sidste mail","Du skulle gerne have fÃ¥et en rÃ¦kke fortlÃ¸bende mails..? Hvis du har, sÃ¥ virker lortet sgu. Hvis ikke, sÃ¥ er der noget galt!\n","From: no-reply@kbnielsen.dk");
  } else {
   echo "Du skal vide, hvordan du bruger den her side...\n";
  }

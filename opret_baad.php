@@ -12,7 +12,7 @@ while($boat_type=mysql_fetch_row($boat_types_db)) {
 </head>
 
 <body>
-<h2>Eksisterende både</h2>
+<h2>Eksisterende bÃ¥de</h2>
 <table border='1'>
   <tr><!--<td>ID</td>--><td>Navn</td><td>Type</td><td>Antal</td><td>Beskrivelse</td><td>Formand</td><td>Slet?</td></tr>
 
@@ -72,10 +72,10 @@ if(isset($_GET["ID"])) {
  }
 ?>
 
-  <h2>(Op)ret båd</h2>
+  <h2>(Op)ret bÃ¥d</h2>
 <form action="opret_baad_create.php" method='post'>
 <table>
-<tr><td>Båd-navn</td><td><input type='text' name='navn' value='<?php echo $navn;?>'></td></tr>
+<tr><td>BÃ¥d-navn</td><td><input type='text' name='navn' value='<?php echo $navn;?>'></td></tr>
 <tr><td>Type</td><td>
   <select name='type'>
 
@@ -91,7 +91,7 @@ foreach($boat_types as $k=>$baad_type){
 <tr><td>Antal arbejdere</td><td><input type='text' name='antal' value='<?php echo $antal; ?>'></td></tr>
 <tr><td>Beskrivelse</td><td><textarea name='beskrivelse' cols='20' rows='4'><?php echo $beskrivelse; ?></textarea></td></tr>
 <tr><td>Formand (medlemsnummer)</td><td><input type='text' name='formand' value='<?php echo $formand;?>'></td></tr>
-<tr><td colspan='2' align='right'><input type='hidden' name='ID' value='<?php echo $ID; ?>'><input type='hidden' name='edit' value='<?php echo $edit; ?>'><input type='submit' value='Gem denne båd'> <a href='opret_baad.php'>Nulstil formular</a></td></tr>
+<tr><td colspan='2' align='right'><input type='hidden' name='ID' value='<?php echo $ID; ?>'><input type='hidden' name='edit' value='<?php echo $edit; ?>'><input type='submit' value='Gem denne bÃ¥d'> <a href='opret_baad.php'>Nulstil formular</a></td></tr>
 
 </table>
 </form>

@@ -80,9 +80,9 @@ if(isset($_POST["email"])) {
 <body>
 <h2>Vi har sendt dig en kode..</h2>
 <p>Vi har sendt en kode til <tt><?php echo $email; ?></tt>.<br>Check, at du har skrevet din email korrekt.</p>
-<p>I den email vi har sendt står hvordan du ønsker hvilken båd du skal vintervedligeholde.</p>
-<p>Hvis e-mailen er forkert eller hvis du ikke modtager en mail fra os i løbet af kort tid, <a href='index.php'>prøv da venligst igen</a>.
-<p>Herunder kan du se en liste med alle både, og hvem/hvormange der allerede er tilmeldt. Hvis en båd er optaget vil det ikke være muligt at vælge den. Find derfor gerne et par alternativer.</p>
+<p>I den email vi har sendt stÃ¥r hvordan du Ã¸nsker hvilken bÃ¥d du skal vintervedligeholde.</p>
+<p>Hvis e-mailen er forkert eller hvis du ikke modtager en mail fra os i lÃ¸bet af kort tid, <a href='index.php'>prÃ¸v da venligst igen</a>.
+<p>Herunder kan du se en liste med alle bÃ¥de, og hvem/hvormange der allerede er tilmeldt. Hvis en bÃ¥d er optaget vil det ikke vÃ¦re muligt at vÃ¦lge den. Find derfor gerne et par alternativer.</p>
 <p>Med venlig hilsen<br />
 Materieludvalget</p>
 

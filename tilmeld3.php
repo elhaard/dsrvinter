@@ -40,7 +40,14 @@ if (isset($_GET["email"]) && isset($_GET["kode"])){
 echo "</head>\n";
 echo "<body>\n";
 
-if (!strcmp($email,$kode)) {
+echo "<!--\n";
+
+#var_dump($email);
+#var_dump($kode);
+
+echo "-->\n";
+
+if (!isset($email) || !trim($email) || !isset($kode)) {
   // FEJL: email og/eller kode ikke sat
   echo "<p>Skriv din email og kode herunder</p>\n";
   echo "<form action='tilmeld3.php' method='post'>\n";
@@ -55,23 +62,23 @@ if (!strcmp($email,$kode)) {
   $sql="select * from `dsr_vinter_person` where `email`='$email' AND `kode`='$kode' LIMIT 1";
   if (DEBUG) { echo "<br>sql: <tt>$sql</tt><br>\n";}
   $res = mysql_query($sql, $link);
-  $person=mysql_fetch_row($res);
+  $person=mysql_fetch_assoc($res);
   $alt_ok=TRUE;
 
-  if ($alt_ok AND !strcmp($email,$person["email"])) {
+  if ($alt_ok AND $email != $person["email"]) {
     $alt_ok=FALSE;
-    if (DEBUG) { echo "email ikke ens: $email vs ".$persion["email"]; }
+    if (DEBUG) { echo "email ikke ens: '$email' vs '".$person["email"]."'"; }
   }
-  if ($alt_ok AND !strcmp($kode,$person["kode"])) {
+  if ($alt_ok AND $kode != $person["kode"]) {
     $alt_ok=FALSE;
-    if (DEBUG) { echo "kode ikke ens: $kode vs ".$persion["kode"]; }
+    if (DEBUG) { echo "kode ikke ens: '$kode' vs '".$person["kode"]."'"; }
   }
  }
 
 
 if ($alt_ok) {
   // mail og kode korrekt
-  // Søg efter allerede indtastet data
+  // SÃ¸g efter allerede indtastet data
   $sql="select * from `dsr_vinter_person` where `email`='$email' LIMIT 1";
   $res_person=mysql_query($sql,$link);
   $person=mysql_fetch_row($res_person);
@@ -88,18 +95,18 @@ if ($alt_ok) {
     echo "</pre>\n";
   }
     
-  $sql="select * from `dsr_vinter_rotype`";
+  $sql="select * from `dsr_vinter_rotype` order by type";
   $res_rotype=mysql_query($sql, $link);
-  $sql="select * from `dsr_vinter_baad`";
+  $sql="select * from `dsr_vinter_baad` order by navn";
   $res_baade=mysql_query($sql,$link);
   
 
   echo "<h2>Tilmeldingsside</h2>\n";
-  echo "<p>Her tilmelder du dig det ønskede bådhold.</p><p>Du vil i starten af oktober kunne se et opslag i roklubben med alle bådhold. Ydermere vil du også høre fra bådformanden på dit hold.</p>\n";
+  echo "<p>Her tilmelder du dig det Ã¸nskede bÃ¥dhold.</p><p>Du vil i starten af oktober kunne se et opslag i roklubben med alle bÃ¥dhold. Ydermere vil du ogsÃ¥ hÃ¸re fra bÃ¥dformanden pÃ¥ dit hold.</p>\n";
 
   // Hvis der er blevet opdateret...
   if (isset($_GET["update"])) {
-    echo "<div id='1' style='display:inline;'><h3>Ændringerne er gemt</div>&nbsp;</h3>\n";
+    echo "<div id='1' style='display:inline;'><h3>Ã†ndringerne er gemt</div>&nbsp;</h3>\n";
   }
 
   echo "<form action='tilmeld4.php' method='POST'>\n";
@@ -108,7 +115,7 @@ if ($alt_ok) {
   echo "<tr><td>Navn<br>Dette felt er synligt for alle!</td><td><input type='text' name='navn' value='$navn'></td></tr>\n";
   echo "<tr><td>Medlemsnummer</td><td><input type='text' name='medlemnr' value='$medlemnr'></td></tr>\n";
   echo "<tr><td>Telefon</td><td><input type='text' name='tlf' value='$tlf'></td></tr>\n";
-  echo "<tr><td>e-mail<br />(kan ikke ændres)</td><td><input type='text' name='email' value='$email' READONLY></td></tr>\n";
+  echo "<tr><td>e-mail<br />(kan ikke Ã¦ndres)</td><td><input type='text' name='email' value='$email' READONLY></td></tr>\n";
   echo "<tr><td>Kode</td><td><input type='password' name='kode' value='$kode'><td></tr>\n";
   echo "<tr><td>Ro type</td><td><select name='rotype'>\n";
   while ($ro_type=mysql_fetch_row($res_rotype)) {
@@ -117,9 +124,9 @@ if ($alt_ok) {
     echo ">$ro_type[1]</option>\n";
   }
   echo "</select></td></tr>\n";
-  echo "<tr><td>Båd <input type='hidden' name='gl_baad' value='$baad_valg'></td><td><select name='baad'>\n";
+  echo "<tr><td>BÃ¥d <input type='hidden' name='gl_baad' value='$baad_valg'></td><td><select name='baad'>\n";
   while ($row_baad=mysql_fetch_row($res_baade)) {
-    // For hver båd...
+    // For hver bÃ¥d...
     
     if ($row_baad[3]>$row_baad[6]) {
       // Der er endnu ikke nok tilmeldte
@@ -137,7 +144,7 @@ if ($alt_ok) {
     }
   }
   
-  echo "</select><br> Tallene efter hver båd fortæller hvormange af pladserne der er optaget. Er båden rød vil du komme på en venteliste. Vælg en anden båd, hvis du vil være nogenlunde sikker på at komme på din ønskebåd.</td></tr>\n";
+  echo "</select><br> Tallene efter hver bÃ¥d fortÃ¦ller hvormange af pladserne der er optaget. Er bÃ¥den rÃ¸d vil du komme pÃ¥ en venteliste. VÃ¦lg en anden bÃ¥d, hvis du vil vÃ¦re nogenlunde sikker pÃ¥ at komme pÃ¥ din Ã¸nskebÃ¥d.</td></tr>\n";
   echo "<tr><td>&nbsp;</td><td><input type='submit' value='Gem'></td></tr>\n";
   echo "</table>\n";
   echo "</form>\n";
@@ -146,7 +153,7 @@ if ($alt_ok) {
   // fejl i kode
   if ($email != '' || $kode != ''){
   echo "<h2>Ups...</h2>\n";
-  echo "<p>Der er sket en fejl. Din kode var forkert. Det kan skyldes flere ting (og er formentligt ikke din skyld). Vi vil bede dig <a href='index.php'>prøve igen her</a>.</p><p>Undskyld ulejligheden</p>\n";
+  echo "<p>Der er sket en fejl. Din kode var forkert. Det kan skyldes flere ting (og er formentligt ikke din skyld). Vi vil bede dig <a href='index.php'>prÃ¸ve igen her</a>.</p><p>Undskyld ulejligheden</p>\n";
 }
  }
 

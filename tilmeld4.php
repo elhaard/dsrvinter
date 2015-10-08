@@ -1,11 +1,11 @@
 <?php
 
-header('Content-Type: text/html; charset=iso-8859-1');
+header('Content-Type: text/html; charset=utf-8');
 
 require("sql.php");
 
 if($_POST["medlemnr"]==0) {
-  //Man må ikke have medlemsnummer 0! Det bruges til default...
+  //Man mÃ¥ ikke have medlemsnummer 0! Det bruges til default...
   $baad_error=FALSE;
  } else {
   $sql="UPDATE `dsr_vinter_person` SET ".
@@ -21,7 +21,7 @@ if($_POST["medlemnr"]==0) {
   mysql_query($sql,$link);
   $sql_error = mysql_error();
 
-// opdater antal på baaden
+// opdater antal pÃ¥ baaden
 $baad_sql="UPDATE `dsr_vinter_baad` set `tilmeldte`=`tilmeldte`+1 where `ID`='".$_POST["baad"]."'";
 $baad_res=mysql_query($baad_sql,$link);
 $baad_error=mysql_error();

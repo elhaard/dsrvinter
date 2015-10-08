@@ -11,7 +11,7 @@ if(isset($_POST["navn"])) {
   $formand=htmlentities($_POST["formand"]);
 
   if ($_POST["edit"]) {
-    // editér baad
+    // editÃ©r baad
     $sql="UPDATE `dsr_vinter_baad` SET ".
       "`navn` = '$navn', ".
       "`type` = $type, ".

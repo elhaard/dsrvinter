@@ -1,6 +1,6 @@
 <?php
 
-// include af denne fil medfører automatisk connection. Brug $link
+// include af denne fil medfÃ¸rer automatisk connection. Brug $link
 
 function print_array(&$a) {
   echo "<hr><pre>";
@@ -9,9 +9,10 @@ function print_array(&$a) {
 }
 
 function sql_connect() {
-  $link = mysql_connect("localhost", "tlb", "RFrdGPwbz5SzTsMe")
+  $link = mysql_connect("localhost", "nversion", "EPv0Jq8S0QTG72wLF9WPl3F")
     or exit("Could not connect to database (from __FILE__)");
-  mysql_select_db("tlb_dsrvinter2013",$link);
+  mysql_select_db("nversion_dsrvinter2014",$link);
+  mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $link);
   return $link;
 }
 
