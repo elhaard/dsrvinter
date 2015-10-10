@@ -11,11 +11,12 @@ function print_array(&$a) {
 function sql_connect() {
   $link = mysql_connect("localhost", "nversion", "EPv0Jq8S0QTG72wLF9WPl3F")
     or exit("Could not connect to database (from __FILE__)");
-  mysql_select_db("nversion_dsrvinter2014",$link);
+  mysql_select_db("nversion_dsrvinter2015",$link);
   mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $link);
   return $link;
 }
 
+$admin_secret = 'BamseFar';
 $asr_kode="as6Jd.9qa2V7Y"; // asr, H2SO4
 $link=sql_connect();
 ?>

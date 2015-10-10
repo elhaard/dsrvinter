@@ -24,14 +24,31 @@ header('Content-Type: text/html; charset=utf-8');
 -->
 
 <p>Her kan du tilmelde dig vintervedligehold:</p>
-<p>Husk at udfylde alle oplysninger: navn, adresse, medlemsnummer, mailadresse, telefonnummer med mere. <br />
-Alle disse oplysninger bruges til at danne de lister som b&aring;dform&aelig;ndene får udleveret med deres hold. <br />
-Det er derfor vigtigt, at man indtaster de korrekte data. <br />
-Hvis man glemmer at melde sig til vil man blive placeret på et vilk&aring;rligt b&aring;dhold.</p><br />
-<form action='tilmeld2.php' method='POST'>
-Indtast din email: <input type='text' name='email' size='30'><br>
-<input type='submit' value='Tilmeld...'>
-</form>
+Hvis man glemmer at melde sig til vil man blive placeret på et vilk&aring;rligt b&aring;dhold.</p>
 
+<p>For at logge ind, skal du bruge et særligt password, som du har fået tilsendt pr. mail.<br/>
+Hvis du ikke har modtaget dit password (eller ikke kan huske det) så kan du <a href="glemt.php">klikke her for at få det tilsendt</a>.
+</p>
+
+<br />
+<form action="tilmeld2.php" method="POST">
+  <table border="0" class="login-boks">
+     <tr>
+	 <th colspan="2">Login</th>
+     </tr>
+     <tr>
+	<td>Medlemsnummer:</td>
+	<td><input type='text' name='medlemsnummer' size='4'></td>
+    </tr>
+    <tr>
+	<td>Vinter-password:</td>
+	<td><input type="password" name="password" size="20"></td>
+    </tr>
+    <tr>
+	<td colspan="2"><input type='submit' value='Login...'></td>
+    </tr>
+  </table>
+</form>
+<a href="glemt.php">Glemt password?</a>
 </body>
 </html>

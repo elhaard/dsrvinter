@@ -47,3 +47,12 @@ option {
   font-size: 20px;
   color: #aa0000;
 }
+
+.login-boks {
+  background-color: #ddd;
+}
+
+table.login-boks th {
+  text-align: left;
+
+}

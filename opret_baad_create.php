@@ -2,8 +2,7 @@
 header("Location: opret_baad.php");
 include_once("sql.php");
 
-if(isset($_POST["navn"])) {
-  $ID=$_POST["ID"];
+if (isset($_POST['secret']) && $_POST['secret'] == $admin_secret && isset($_POST["navn"])) {
   $navn=htmlentities($_POST["navn"]);
   $type=htmlentities($_POST["type"]);
   $antal=htmlentities($_POST["antal"]);
