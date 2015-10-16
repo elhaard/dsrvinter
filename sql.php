@@ -9,11 +9,29 @@ function print_array(&$a) {
 }
 
 function sql_connect() {
-  $link = mysql_connect("localhost", "nversion", "EPv0Jq8S0QTG72wLF9WPl3F")
-    or exit("Could not connect to database (from __FILE__)");
-  mysql_select_db("nversion_dsrvinter2015",$link);
-  mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $link);
+  $link = new mysqli("localhost", "nversion", "EPv0Jq8S0QTG72wLF9WPl3F", "nversion_dsrvinter2015");
+
+  if ($link->connect_errno) {
+    printf("Could not connect to database: %s\n", $mysqli->connect_error);
+    exit();
+  }
+  $link->set_charset('utf8');
   return $link;
+}
+
+function generate_password($len = 10) {
+   $vokaler = array('a', 'e', 'i', 'o', 'u', 'y');
+   $konsonanter = array('b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z');
+   $res = '';
+   for ($i = 0; $i < $len; $i++) {
+	if ($i % 2 == 0) {
+	   $res .= $konsonanter[ mt_rand(0, 18) ];
+        } else {
+           $res .= $vokaler[ mt_rand(0, 5) ];
+	}
+   }
+
+   return $res;
 }
 
 $admin_secret = 'BamseFar';

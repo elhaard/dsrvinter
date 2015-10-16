@@ -42,10 +42,26 @@ option {
   color: #0000aa;
  }
 
-.optaget { 
-  font-family: helvetica;
-  font-size: 20px;
-  color: #aa0000;
+div.baadinfo {
+   background-color: #aaa;
+   border: 1px solid #ccc;
+   width: 90%;
+   margin-top: 1em;
+}
+
+div.baadinfo.ledig {
+   background-color: #afa;
+   border-color: #cac;
+}
+
+div.baadinfo.optaget {
+   background-color: #faa;
+   border-color: #acc;
+}
+
+div.baadinfo.min_baad {
+   background-color: #ffa;
+   border: 2px solid #aac;
 }
 
 .login-boks {
@@ -55,4 +71,30 @@ option {
 table.login-boks th {
   text-align: left;
 
+}
+
+.infotable {
+   background-color: #ddd;
+}
+table.infotable th {
+   text-align: left;
+}
+
+span.tilmeld_span {
+   margin-left: 3em;
+   display: inline;
+} 
+span.tilmeld_span form {
+   display: inline;
+   margin: 0px;
+}
+
+.error {
+   color: #c00;
+   font-weight: bold;
+}
+
+.ok {
+   color: #0c0;
+   font-weight: bold;
 }

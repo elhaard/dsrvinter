@@ -24,7 +24,7 @@ header('Content-Type: text/html; charset=utf-8');
 -->
 
 <p>Her kan du tilmelde dig vintervedligehold:</p>
-Hvis man glemmer at melde sig til vil man blive placeret på et vilk&aring;rligt b&aring;dhold.</p>
+Hvis man ikke n&aring;r at melde sig til vil man blive placeret på et vilk&aring;rligt b&aring;dhold.</p>
 
 <p>For at logge ind, skal du bruge et særligt password, som du har fået tilsendt pr. mail.<br/>
 Hvis du ikke har modtaget dit password (eller ikke kan huske det) så kan du <a href="glemt.php">klikke her for at få det tilsendt</a>.
