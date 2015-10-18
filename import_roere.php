@@ -160,6 +160,15 @@ if (isset($user) && $user['is_admin']) {
 	    echo "<li>$msg</li>\n";
           }
 	  echo "</ul></p>\n";
+	  
+         ?>
+         <p>Husk at sende invitationer til roerne, så de kan få deres password. Du kan gøre det nu eller senere.</p>
+         <form action="send_mails.php" method="post" onsubmit="return confirm('Vil du sende invitationer til alle, der ikke allerede har fået invitation?')">
+             <?= $form_fields ?>
+             <input type="submit" value="Send invitationer nu" />
+         </form>
+        <?php
+
         }
     }
 
@@ -179,11 +188,11 @@ if (isset($user) && $user['is_admin']) {
     <form action="import_roere.php" method="post"> 
        <input type="hidden" name="import_rowers" value="1" />
        <?= $form_fields ?>
-
        <textarea name="new_rowers" cols="100" rows="20" placeholder="Indsæt oplysninger her"></textarea>
        <br/>
        <input type="submit" value="Opret roere" />
     </form>
+
   <?php
 
     }

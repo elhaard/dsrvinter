@@ -4,9 +4,10 @@
 include("header.php");
 if (isset($user)) {
 
+  $year = get_setting('year');
   echo "</head>\n<body>\n";
 
-  echo "<h2>Vintervedligehold 2015 for " . $user['navn'] . "</h2>\n";
+  echo "<h2>Vintervedligehold $year for " . $user['navn'] . "</h2>\n";
 
 
   if ($user['is_admin']) {
@@ -20,9 +21,14 @@ if (isset($user)) {
        <?= $form_fields ?>
        <input type="submit" value="Importér roere" />
     </form>
+    <form action="send_mails.php" method="post" onsubmit="return confirm('Vil du sende invitationer til alle, der ikke allerede har fået invitation?')">
+       <?= $form_fields ?>
+       <input type="submit" value="Send invitationer" />
+    </form>
     <?php
   }
 
+  echo '<div id="roer-info">';
   // Find formands-oplysninger
   $res = $link->query("SELECT b.* FROM dsr_vinter_baad b JOIN dsr_vinter_baadformand f ON (b.ID = f.baad) WHERE f.formand = " . (int) $user['ID']);
   if ($res->num_rows == 1) {
@@ -34,11 +40,11 @@ if (isset($user)) {
       $res->close();
 
       echo "<p>I år afhænger vintervedligehold af, hvor mange kilometer, man har roet.</p>";
-      echo "<p>Dine roede kilometer i 2015 svarer til kategori <b>" . $user['kategori_navn']
+      echo "<p>Dine roede kilometer i $year svarer til kategori <b>" . $user['kategori_navn']
            . "</b>. Det betyder, at du forventes at deltage i vintervedligehold i mindst <b>"
            . $user['kategori_timer'] . " timer</b>.</p>\n";
   }
-
+  echo "</div>\n";
 
   if (isset($_POST['save_user_info']) && $_POST['save_user_info'] == '1') {
      if (isset($_POST['email']) && isset($_POST['tlf'])) {
@@ -49,9 +55,7 @@ if (isset($user)) {
                                  . $link->escape_string($email) . "', tlf = '"
                                  . $link->escape_string($tlf) . "' WHERE ID = "
                                  . (int) $user['ID']);
-	   if ($saved) {
-		echo "<p class=\"ok\">Oplysningerne blev gemt</p>\n";
-           } else {
+	   if (! $saved) {
                 echo "<p class=\"error\">Fejl: Kunne ikke gemme dine oplysninger.</p>";
            }
         }
@@ -111,15 +115,19 @@ if (isset($user)) {
 
     if (isset($baad)) {
       ?>
-      <p>Du er tilmeldt vintervedligehold på båden <b><?= $baad['navn'] ?></b>.<br/>
-         Den skal vedligeholdes <b><?= $baad['periode'] ?></b></p>
+      <div id="min-baadtilmelding">
+         <p>Du er tilmeldt vintervedligehold på båden <b><?= $baad['navn'] ?></b>.<br/>
+            Den skal vedligeholdes <b><?= $baad['periode'] ?></b></p>
 
-      <p>Hvis du hellere vil på en anden båd, så kan du vælge en anden båd herunder.</p>
+         <p>Hvis du hellere vil på en anden båd, så kan du vælge en anden båd herunder.</p>
+      </div>
       <?php
       $min_baad = $baad['ID'];
     } else {
       ?>
-      <p>Du er endnu ikke tilmeldt en båd. Du kan tilmelde dig herunder.</p>
+      <div id="ikke-tilmeldt">
+         <p>Du er endnu ikke tilmeldt en båd. Du kan tilmelde dig herunder.</p>
+      </div>
       <?php
     }
   }
@@ -152,8 +160,8 @@ if (isset($user)) {
                           ORDER BY p.navn");
     if ($res) {
         while ($prow = $res->fetch_assoc()) {
-	   $tilmeldte[ $prow['baad'] ][] = $prow;
            $personer[ $prow['ID'] ] = $prow;
+	   $tilmeldte[ $prow['baad'] ][] =& $personer[ $prow['ID'] ]; 
         }
         $res->close();
     } else {
@@ -199,7 +207,7 @@ if (isset($user)) {
           $class .= 'optaget';
       }
       $tilmeldte_str = ($antal == 1) ? "tilmeldt" : "tilmeldte";
-      echo "<div class=\"baadinfo $class\"><b>" . $c_baad['navn'] . "</b> - $antal $tilmeldte_str.";
+      echo "<div class=\"baadinfo $class\"><div class=\"baad_header\"><b>" . $c_baad['navn'] . "</b> - $antal $tilmeldte_str.";
       if ($ledig) {
           echo " Ledig.";
 
@@ -220,7 +228,7 @@ if (isset($user)) {
       } else  {
           echo " Ingen ledige pladser.";
       }
-      echo "<br/>\n" . $c_baad['baadtype'];
+      echo "</div>\n" . $c_baad['baadtype'];
       echo ". Vedligeholdes <b>" . $c_baad['periode'] . "</b>";
       if (isset($c_baad['beskrivelse']) && trim($c_baad['beskrivelse']) != '') {
           echo "<br/>\n<i>" . htmlspecialchars($c_baad['beskrivelse']) . "</i>";
@@ -240,7 +248,7 @@ if (isset($user)) {
       if ($antal > 0) {
           echo "<div class=\"baad_deltagere\">\n";
           echo "<u>Tilmeldte:</u>";
-          echo "<ul>\n";
+          echo "<ul class=\"deltager_liste\">\n";
 	  foreach ($c_tilmeldte as $c_tilmeldt) {
              echo "<li>" . $c_tilmeldt['ID'] . ": " . $c_tilmeldt['navn'];
 	     if ($c_tilmeldt['is_formand']) {

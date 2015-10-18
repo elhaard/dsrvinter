@@ -34,6 +34,18 @@ function generate_password($len = 10) {
    return $res;
 }
 
+function get_setting($name, $link = false) {
+  if (!$link) {
+    $link = $GLOBALS['link'];
+  }
+  $res = $link->query("SELECT * FROM dsr_vinter_settings WHERE name = '" . $link->escape_string($name) . "'");
+  if ($res && $row = $res->fetch_assoc() ) {
+    return $row['content'];
+  }
+  return "";
+}
+
+
 $admin_secret = 'BamseFar';
 $asr_kode="as6Jd.9qa2V7Y"; // asr, H2SO4
 $link=sql_connect();
