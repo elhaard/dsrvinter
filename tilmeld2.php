@@ -28,6 +28,7 @@ if (isset($user)) {
 </head>
 <body>
 
+<h2>Kontrollér oplysninger</h2>
 <p>Hej <?=$user['navn'] ?></p>
 
 <p>Vi vil lige sikre os, at de oplysninger, vi har om dig, er korrekte.</p>

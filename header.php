@@ -52,7 +52,7 @@ if (isset($_POST["medlemsnummer"]) && isset($_POST["password"])){
   $login_error = "Du skal være logget ind for at se denne side.";
 }
 
-if (! $authenticated) {
+if (!$authenticated && ! (isset($public_page) && $public_page) ) {
     echo "</head>\n";
     echo "<body>\n";
     if ($login_error) {

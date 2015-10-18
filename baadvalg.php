@@ -12,19 +12,21 @@ if (isset($user)) {
 
   if ($user['is_admin']) {
     ?>
-    <p>Du er vintervedligeholds-administrator!</p>
-    <form action="import_baade.php" method="post">
-       <?= $form_fields ?>
-       <input type="submit" value="Importér både" />
-    </form>
-    <form action="import_roere.php" method="post">
-       <?= $form_fields ?>
-       <input type="submit" value="Importér roere" />
-    </form>
-    <form action="send_mails.php" method="post" onsubmit="return confirm('Vil du sende invitationer til alle, der ikke allerede har fået invitation?')">
-       <?= $form_fields ?>
-       <input type="submit" value="Send invitationer" />
-    </form>
+    <div class="administrator-info">
+      <p>Du er vintervedligeholds-administrator!</p>
+      <form action="import_baade.php" method="post">
+         <?= $form_fields ?>
+         <input type="submit" value="Importér både" />
+      </form>
+      <form action="import_roere.php" method="post">
+         <?= $form_fields ?>
+         <input type="submit" value="Importér roere" />
+      </form>
+      <form action="send_mails.php" method="post" onsubmit="return confirm('Vil du sende invitationer til alle, der ikke allerede har fået invitation?')">
+         <?= $form_fields ?>
+         <input type="submit" value="Send invitationer" />
+      </form>
+    </div>
     <?php
   }
 
@@ -228,7 +230,7 @@ if (isset($user)) {
       } else  {
           echo " Ingen ledige pladser.";
       }
-      echo "</div>\n" . $c_baad['baadtype'];
+      echo "</div>\n<div class=\"extra_info\">" . $c_baad['baadtype'];
       echo ". Vedligeholdes <b>" . $c_baad['periode'] . "</b>";
       if (isset($c_baad['beskrivelse']) && trim($c_baad['beskrivelse']) != '') {
           echo "<br/>\n<i>" . htmlspecialchars($c_baad['beskrivelse']) . "</i>";
@@ -245,6 +247,7 @@ if (isset($user)) {
       if ($formand_count == 0) {
          echo "<i>Ingen</i>\n";
       }
+      echo "</div>\n";
       if ($antal > 0) {
           echo "<div class=\"baad_deltagere\">\n";
           echo "<u>Tilmeldte:</u>";
