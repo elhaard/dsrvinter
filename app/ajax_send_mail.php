@@ -12,7 +12,7 @@ if (isset($_POST["medlemsnummer"]) && isset($_POST["password"])){
   $medlemsnummer=trim($_POST["medlemsnummer"]);  
   $kode=trim($_POST["password"]);
 
-  $res = $link->query("SELECT * FROM dsr_vinter_person WHERE ID = " . (int) $medlemsnummer . " AND kode = '" . $link->escape_string($kode) . "'");
+  $res = $link->query("SELECT * FROM person WHERE ID = " . (int) $medlemsnummer . " AND kode = '" . $link->escape_string($kode) . "'");
   if ($res) {
     if ($res->num_rows == 1) {
       $user = $res->fetch_assoc();
@@ -32,7 +32,7 @@ if (isset($user) && $user['is_admin']) {
      $recipient = $_POST['recipient'];
      $subject = $_POST['subject'];
      $template = $_POST['template'];
-     $res = $link->query("SELECT * FROM dsr_vinter_person WHERE ID = " . (int) $recipient);
+     $res = $link->query("SELECT * FROM person WHERE ID = " . (int) $recipient);
      if ($res) {
 	if ($res->num_rows == 1) {
            $row = $res->fetch_assoc();
@@ -42,7 +42,7 @@ if (isset($user) && $user['is_admin']) {
                $result['error'] = $mail_error;
            } else {
                if (isset($_POST['mark_sent']) && $_POST['mark_sent']) {
-		  $link->query("UPDATE dsr_vinter_person SET email_sent = 1 WHERE ID = " . (int) $row['ID']);
+		  $link->query("UPDATE person SET email_sent = 1 WHERE ID = " . (int) $row['ID']);
                }
                $result['success'] = true;
            }

@@ -19,12 +19,12 @@ if (isset($user) && $user['is_admin']) {
 	$baadID = isset($_POST['baadID']) ? (int) trim($_POST['baadID']) : 0;
         $be_formand = ( isset($_POST['be_formand']) && trim($_POST['be_formand']) );
 	   $newBoat = ( $baadID > 0 ) ? (int) $baadID : 'NULL';
-           $res = $link->query("UPDATE dsr_vinter_person SET baad = $newBoat WHERE ID = $id LIMIT 1");
+           $res = $link->query("UPDATE person SET baad = $newBoat WHERE ID = $id LIMIT 1");
            if ($res) {
-              $res = $link->query("DELETE FROM dsr_vinter_baadformand WHERE formand = $id LIMIT 1");
+              $res = $link->query("DELETE FROM baadformand WHERE formand = $id LIMIT 1");
               if ($res) {
                   if ($be_formand) {
-	             $res = $link->query("INSERT INTO dsr_vinter_baadformand (baad, formand) VALUES ($newBoat, $id)");
+	             $res = $link->query("INSERT INTO baadformand (baad, formand) VALUES ($newBoat, $id)");
                      if (!$res) {
                         echo "<p class=\"error\">Kunne ikke sætte ny bådformand</p>\n";
                      }
@@ -36,8 +36,8 @@ if (isset($user) && $user['is_admin']) {
               echo "<p class=\"error\">Kunne ikke sætte ny båd</p>\n";
           }
      } elseif ($action == 'delete_rower') {
-         if ( $link->query("DELETE FROM dsr_vinter_baadformand WHERE formand = $id LIMIT 1") ) {
-            if ( $link->query("DELETE FROM dsr_vinter_person WHERE ID = $id LIMIT 1") ) {
+         if ( $link->query("DELETE FROM baadformand WHERE formand = $id LIMIT 1") ) {
+            if ( $link->query("DELETE FROM person WHERE ID = $id LIMIT 1") ) {
 		echo '<p class="ok">Slettede personen</p>';
             } else {
                echo '<p class="error">Kunne ikke slette personen</p>';
@@ -59,7 +59,7 @@ if (isset($user) && $user['is_admin']) {
 
 
   // Find baade
-  $res = $link->query("SELECT * FROM dsr_vinter_baad ORDER BY navn, ID");
+  $res = $link->query("SELECT * FROM baad ORDER BY navn, ID");
 
   if (! $res) {
      echo "<p class=\"error\">Fejl: Kunne ikke finde bådliste!!!</p>";
@@ -79,8 +79,8 @@ if (isset($user) && $user['is_admin']) {
   $res = $link->query("SELECT p.*,
                               k.timer as timer,
                               k.navn as kategori_navn
-                       FROM dsr_vinter_person p
-                       LEFT JOIN dsr_vinter_roer_kategori k ON (p.kategori = k.ID)
+                       FROM person p
+                       LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                        ORDER BY p.navn, p.ID");
   if ($res) {
       while ($prow = $res->fetch_assoc()) {
@@ -96,7 +96,7 @@ if (isset($user) && $user['is_admin']) {
      echo "<p class=\"error\">Fejl: Kunne ikke finde roere!!!</p>";
   }
 
-  $res = $link->query("SELECT * FROM dsr_vinter_baadformand");
+  $res = $link->query("SELECT * FROM baadformand");
   if ($res) {
      while ($row = $res->fetch_assoc()) {
         $fm = $row['formand'];

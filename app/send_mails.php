@@ -10,7 +10,7 @@ if (isset($user) && $user['is_admin']) {
 
   $recipients = array();
 
-     $res = $link->query("SELECT ID, email, navn FROM dsr_vinter_person WHERE email_sent IS NULL or email_sent = 0");
+     $res = $link->query("SELECT ID, email, navn FROM person WHERE email_sent IS NULL or email_sent = 0");
      if ($res) {
 	$count = $res->num_rows;
         $total = 0;

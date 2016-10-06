@@ -14,11 +14,12 @@
           $email = trim($user['email']);
 
           $mail_headers = array(
-                              'From'                      => "DSR Materieludvalg - svar ikke! <jel@elgaard.net>",
+                              'From'                      => "DSR Materieludvalg - svar ikke! <dsr@elgaard.net>",
+          					  'Reply-To'                  => "Materielforvalteren <materiel@danskestudentersroklub.dk>, Jørgen Elgaard Larsen <jel@elgaard.net>",
                               'Content-Transfer-Encoding' => "8bit",
-			      'Content-Type'              => 'text/plain; charset="utf8"',
-			      'Date'                      => date('r'),
-			      'Message-ID'                => "<".sha1(microtime(true))."@web1.nversion.dk>",
+						      'Content-Type'              => 'text/plain; charset="utf8"',
+						      'Date'                      => date('r'),
+			      			  'Message-ID'                => "<".sha1(microtime(true))."@vintervedligehold.danskestudentersroklub.dk>",
                               'MIME-Version'              => "1.0",
                               'X-Mailer'                  => "PHP-Custom",
                               'Subject'                   => "$subject"

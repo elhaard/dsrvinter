@@ -48,7 +48,7 @@ if (isset($user)) {
 
   echo '<div id="roer-info">';
   // Find formands-oplysninger
-  $res = $link->query("SELECT b.* FROM dsr_vinter_baad b JOIN dsr_vinter_baadformand f ON (b.ID = f.baad) WHERE f.formand = " . (int) $user['ID']);
+  $res = $link->query("SELECT b.* FROM baad b JOIN baadformand f ON (b.ID = f.baad) WHERE f.formand = " . (int) $user['ID']);
   if ($res->num_rows == 1) {
       $formand = $res->fetch_assoc();
       $res->free();
@@ -69,7 +69,7 @@ if (isset($user)) {
         $email = trim($_POST['email']);
 	$tlf = trim($_POST['tlf']);
 	if ($email != '' && $tlf != '') {
-	   $saved = $link->query("UPDATE dsr_vinter_person SET email = '"
+	   $saved = $link->query("UPDATE person SET email = '"
                                  . $link->escape_string($email) . "', tlf = '"
                                  . $link->escape_string($tlf) . "' WHERE ID = "
                                  . (int) $user['ID']);
@@ -86,19 +86,19 @@ if (isset($user)) {
 
 	if ($ny_baad > 0) {
 	   $time_res = $link->query("SELECT IFNULL(SUM(k.timer),0) FROM
-                                     dsr_vinter_person p
-                                     JOIN dsr_vinter_roer_kategori k ON (k.ID = p.kategori)
+                                     person p
+                                     JOIN roer_kategori k ON (k.ID = p.kategori)
 				     WHERE p.baad = " . (int) $ny_baad);
            if ($time_res) {
               $time_row = $time_res->fetch_array();
               if ($time_row) {
 		$brugte_timer = $time_row[0];
-		$ledig_res = $link->query("SELECT * from dsr_vinter_baad WHERE ID = " . (int) $ny_baad);
+		$ledig_res = $link->query("SELECT * from baad WHERE ID = " . (int) $ny_baad);
 		if ($ledig_res) {
 		   $baadinfo = $ledig_res->fetch_assoc();
 		   if (isset($baadinfo)) {
 			if ($user['kategori_timer'] + $brugte_timer <= $baadinfo['max_timer']) {
-			   if ($link->query("UPDATE dsr_vinter_person SET baad = " . (int) $ny_baad . " WHERE ID = " . (int) $user['ID'] )) {
+			   if ($link->query("UPDATE person SET baad = " . (int) $ny_baad . " WHERE ID = " . (int) $user['ID'] )) {
 			      echo "<p class=\"ok\">Din tilmelding er gemt.</p>\n";
                               $user['baad'] = $ny_baad;
                            } else {
@@ -121,7 +121,7 @@ if (isset($user)) {
   $min_baad = 0;
   if (!$formand) {
     if ($user['baad']) {
-      	$res = $link->query("SELECT * FROM dsr_vinter_baad WHERE ID = " . (int) $user['baad']);
+      	$res = $link->query("SELECT * FROM baad WHERE ID = " . (int) $user['baad']);
 	if ($res) {
 	   $baad = $res->fetch_assoc();
 	   $res->close();
@@ -156,8 +156,8 @@ if (isset($user)) {
 
   // Find baade
   $res = $link->query("SELECT b.*, t.type as baadtype 
-                        FROM dsr_vinter_baad b
-                        LEFT JOIN dsr_vinter_baadtype t ON (b.type = t.ID)
+                        FROM baad b
+                        LEFT JOIN baadtype t ON (b.type = t.ID)
                         ORDER BY b.navn, b.ID");
 
   if (! $res) {
@@ -172,8 +172,8 @@ if (isset($user)) {
 
     // Find tilmeldte
     $res = $link->query("SELECT p.*, k.timer as timer, k.navn as kategori_navn 
-                          FROM dsr_vinter_person p 
-                          LEFT JOIN dsr_vinter_roer_kategori k ON (p.kategori = k.ID)
+                          FROM person p 
+                          LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                           WHERE p.baad IS NOT NULL
                           ORDER BY p.navn");
     if ($res) {
@@ -188,8 +188,8 @@ if (isset($user)) {
 
     // Find formaend
     $res = $link->query("SELECT p.*, f.baad as formandsbaad 
-                          FROM dsr_vinter_person p 
-                          JOIN dsr_vinter_baadformand f ON (f.formand = p.ID)
+                          FROM person p 
+                          JOIN baadformand f ON (f.formand = p.ID)
                           ");
     if ($res) {
         while ($frow = $res->fetch_assoc()) {

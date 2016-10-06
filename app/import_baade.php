@@ -16,7 +16,7 @@ if (isset($user) && $user['is_admin']) {
         $show_input = false;
 	// Find eksisterende både
         $baade = array();
-	$res = $link->query("SELECT * from dsr_vinter_baad");
+	$res = $link->query("SELECT * from baad");
         $error = array();
         $ok = array();
 	if ($res) {
@@ -28,7 +28,7 @@ if (isset($user) && $user['is_admin']) {
 
         // Find typer
         $typer = array();
-	$res = $link->query("SELECT * from dsr_vinter_baadtype");
+	$res = $link->query("SELECT * from baadtype");
 	if ($res) {
             while ($row = $res->fetch_assoc()) {
                 $typer[ strtolower($row['type']) ] = $row['ID'];
@@ -72,7 +72,7 @@ if (isset($user) && $user['is_admin']) {
 	     $type_id = $typer[strtolower($type)];
           } else {
              // Opret baadtype
-             $res = $link->query("INSERT INTO dsr_vinter_baadtype (type) VALUES ('" . $link->escape_string($type) . "')");
+             $res = $link->query("INSERT INTO baadtype (type) VALUES ('" . $link->escape_string($type) . "')");
 	     if ($res) {
 		$type_id = $link->insert_id;
 		$typer[ strtolower($type) ] = $type_id;
@@ -85,7 +85,7 @@ if (isset($user) && $user['is_admin']) {
 	  if ($baade[strtolower($navn)]) {
              $id = $baade[strtolower($navn)]['ID'];
 
-	     $res = $link->query("UPDATE dsr_vinter_baad SET type = " . (int) $type_id .
+	     $res = $link->query("UPDATE baad SET type = " . (int) $type_id .
                                  ", navn = '" . $link->escape_string($navn) . 
                                  "', max_timer = " . (int) $timer  .
                                  ", beskrivelse = '" . $link->escape_string($beskrivelse) .
@@ -97,7 +97,7 @@ if (isset($user) && $user['is_admin']) {
                 $error[] = "Linie $lineno: Kunne ikke opdatere eksisterende båd <i>$navn</i>: " . $link->error;
              }
           } else {
-	     $res = $link->query("INSERT INTO dsr_vinter_baad (type, navn, max_timer, beskrivelse, periode) VALUES (" .
+	     $res = $link->query("INSERT INTO baad (type, navn, max_timer, beskrivelse, periode) VALUES (" .
                                  (int) $type_id . ", '" .
                                  $link->escape_string($navn) . "', " . 
                                  (int) $timer . ", '" .

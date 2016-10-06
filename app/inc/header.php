@@ -33,8 +33,8 @@ if (isset($_POST["medlemsnummer"]) && isset($_POST["password"])){
   $kode=trim($_POST["password"]);
 
   $res = $link->query("SELECT p.*, k.navn as kategori_navn, k.timer as kategori_timer
-                       FROM dsr_vinter_person p
-                       LEFT JOIN dsr_vinter_roer_kategori k ON (p.kategori = k.ID)
+                       FROM person p
+                       LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                        WHERE p.ID = " . (int) $medlemsnummer . " AND p.kode = '" . $link->escape_string($kode) . "'");
   if ($res) {
     if ($res->num_rows == 1) {

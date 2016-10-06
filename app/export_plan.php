@@ -13,7 +13,7 @@ if (isset($_POST["medlemsnummer"]) && isset($_POST["password"])){
   $medlemsnummer=trim($_POST["medlemsnummer"]);  
   $kode=trim($_POST["password"]);
 
-  $res = $link->query("SELECT * FROM dsr_vinter_person WHERE ID = " . (int) $medlemsnummer . " AND kode = '" . $link->escape_string($kode) . "'");
+  $res = $link->query("SELECT * FROM person WHERE ID = " . (int) $medlemsnummer . " AND kode = '" . $link->escape_string($kode) . "'");
   if ($res) {
     if ($res->num_rows == 1) {
       $user = $res->fetch_assoc();
@@ -34,7 +34,7 @@ if (isset($user) && $user['is_admin']) {
 
   // Find baade
   $res = $link->query("SELECT *
-                        FROM dsr_vinter_baad
+                        FROM baad
                         ORDER BY navn, ID");
   if (!$res) {
      echo "Fejl: Kunne ikke finde bådliste!!!\n";
@@ -48,8 +48,8 @@ if (isset($user) && $user['is_admin']) {
 
      // Find tilmeldte
      $res = $link->query("SELECT p.*, k.timer as timer, k.navn as kategori_navn 
-                          FROM dsr_vinter_person p 
-                          LEFT JOIN dsr_vinter_roer_kategori k ON (p.kategori = k.ID)
+                          FROM person p 
+                          LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                           WHERE p.baad IS NOT NULL
                           ORDER BY p.navn");
      if ($res) {
@@ -65,8 +65,8 @@ if (isset($user) && $user['is_admin']) {
     
      // Find formaend
      $res = $link->query("SELECT p.*, f.baad as formandsbaad 
-                          FROM dsr_vinter_person p 
-                          JOIN dsr_vinter_baadformand f ON (f.formand = p.ID)
+                          FROM person p 
+                          JOIN baadformand f ON (f.formand = p.ID)
                           ");
      if ($res) {
         while ($frow = $res->fetch_assoc()) {

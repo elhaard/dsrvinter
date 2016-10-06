@@ -30,7 +30,7 @@ header('Content-Type: text/html; charset=utf-8');
 	$medl_nr =  (int) trim($_POST['medl_nr']);
 	require("sql.php");
         require("mail_sender.php");
-	$res = $link->query("SELECT * FROM  dsr_vinter_person WHERE ID = " . (int) $medl_nr);
+	$res = $link->query("SELECT * FROM  person WHERE ID = " . (int) $medl_nr);
         if ($res) {
 	    $person = $res->fetch_assoc();
             if ($person) {

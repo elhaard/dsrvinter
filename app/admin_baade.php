@@ -18,19 +18,19 @@ if (isset($user) && $user['is_admin']) {
 
 	if ($ny_baad > 0) {
 	   $time_res = $link->query("SELECT IFNULL(SUM(k.timer),0) FROM
-                                     dsr_vinter_person p
-                                     JOIN dsr_vinter_roer_kategori k ON (k.ID = p.kategori)
+                                     person p
+                                     JOIN roer_kategori k ON (k.ID = p.kategori)
 				     WHERE p.baad = " . (int) $ny_baad);
            if ($time_res) {
               $time_row = $time_res->fetch_array();
               if ($time_row) {
 		$brugte_timer = $time_row[0];
-		$ledig_res = $link->query("SELECT * from dsr_vinter_baad WHERE ID = " . (int) $ny_baad);
+		$ledig_res = $link->query("SELECT * from baad WHERE ID = " . (int) $ny_baad);
 		if ($ledig_res) {
 		   $baadinfo = $ledig_res->fetch_assoc();
 		   if (isset($baadinfo)) {
 			if ($user['kategori_timer'] + $brugte_timer <= $baadinfo['max_timer']) {
-			   if ($link->query("UPDATE dsr_vinter_person SET baad = " . (int) $ny_baad . " WHERE ID = " . (int) $user['ID'] )) {
+			   if ($link->query("UPDATE person SET baad = " . (int) $ny_baad . " WHERE ID = " . (int) $user['ID'] )) {
 			      echo "<p class=\"ok\">Din tilmelding er gemt.</p>\n";
                               $user['baad'] = $ny_baad;
                            } else {
@@ -57,8 +57,8 @@ if (isset($user) && $user['is_admin']) {
 
   // Find baade
   $res = $link->query("SELECT b.*, t.type as baadtype 
-                        FROM dsr_vinter_baad b
-                        LEFT JOIN dsr_vinter_baadtype t ON (b.type = t.ID)
+                        FROM baad b
+                        LEFT JOIN baadtype t ON (b.type = t.ID)
                         ORDER BY b.navn, b.ID");
 
   if (! $res) {
@@ -72,7 +72,7 @@ if (isset($user) && $user['is_admin']) {
     $res->close();
 
     // Find minimum timetal
-    $res = $link->query("SELECT timer FROM dsr_vinter_roer_kategori
+    $res = $link->query("SELECT timer FROM roer_kategori
                          WHERE timer IS NOT NULL AND timer > 0
                          ORDER BY timer ASC
                          LIMIT 1");
@@ -87,8 +87,8 @@ if (isset($user) && $user['is_admin']) {
 
     // Find tilmeldte
     $res = $link->query("SELECT p.*, k.timer as timer, k.navn as kategori_navn 
-                          FROM dsr_vinter_person p 
-                          LEFT JOIN dsr_vinter_roer_kategori k ON (p.kategori = k.ID)
+                          FROM person p 
+                          LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                           WHERE p.baad IS NOT NULL
                           ORDER BY p.navn");
     if ($res) {
@@ -104,8 +104,8 @@ if (isset($user) && $user['is_admin']) {
     
     // Find formaend
     $res = $link->query("SELECT p.*, f.baad as formandsbaad 
-                          FROM dsr_vinter_person p 
-                          JOIN dsr_vinter_baadformand f ON (f.formand = p.ID)
+                          FROM person p 
+                          JOIN baadformand f ON (f.formand = p.ID)
                           ");
     if ($res) {
         while ($frow = $res->fetch_assoc()) {

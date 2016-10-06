@@ -17,7 +17,7 @@ if (isset($user) && $user['is_admin']) {
 
 	// Find eksisterende roere
         $roere = array();
-	$res = $link->query("SELECT * from dsr_vinter_person");
+	$res = $link->query("SELECT * from person");
         $error = array();
         $ok = array();
 	if ($res) {
@@ -29,7 +29,7 @@ if (isset($user) && $user['is_admin']) {
 
         // Find kategorier
         $kategorier = array();
-	$res = $link->query("SELECT * from dsr_vinter_roer_kategori");
+	$res = $link->query("SELECT * from roer_kategori");
 	if ($res) {
             while ($row = $res->fetch_assoc()) {
                 $kategorier[ strtolower($row['navn']) ] = $row;
@@ -39,7 +39,7 @@ if (isset($user) && $user['is_admin']) {
 
         // Find  både
         $baade = array();
-	$res = $link->query("SELECT * FROM dsr_vinter_baad");
+	$res = $link->query("SELECT * FROM baad");
 	if ($res) {
             while ($row = $res->fetch_assoc()) {
                 $baade[ strtolower($row['navn']) ] = $row;
@@ -98,7 +98,7 @@ if (isset($user) && $user['is_admin']) {
 	        $baad_value = 'NULL';
              }
 
-	     $res = $link->query("UPDATE dsr_vinter_person SET  " .
+	     $res = $link->query("UPDATE person SET  " .
                                  " navn = '" . $link->escape_string($navn) . 
                                  "', kategori = " . (int) $kategori_id  .
                                  ", email = '" . $link->escape_string($email) .
@@ -109,7 +109,7 @@ if (isset($user) && $user['is_admin']) {
              } else {
                 $error[] = "Linie $lineno: Kunne ikke opdatere eksisterende roer <i>$medlem_id ($navn)</i>: " . $link->error;
              }
-	     $res = $link->query("DELETE FROM dsr_vinter_baadformand WHERE formand = " . (int) $medlem_id);
+	     $res = $link->query("DELETE FROM baadformand WHERE formand = " . (int) $medlem_id);
 	     if (! $res ) {
                 $error[] = "Linie $lineno: Kunne ikke fjerne formandsoplysninger: " . $link->error;
              }
@@ -118,7 +118,7 @@ if (isset($user) && $user['is_admin']) {
 	     $baad_value = $formandsbaad ? (int) $formandsbaad : 'NULL';
 	     $pw = generate_password();
 
-	     $res = $link->query("INSERT INTO dsr_vinter_person (ID, navn, kategori, email, baad, kode) VALUES (" .
+	     $res = $link->query("INSERT INTO person (ID, navn, kategori, email, baad, kode) VALUES (" .
                                  (int) $medlem_id . ", '" .
                                  $link->escape_string($navn) . "', " . 
                                  (int) $kategori_id . ", '" .
@@ -140,7 +140,7 @@ if (isset($user) && $user['is_admin']) {
              }
           }
           if ($formandsbaad) {
-            $res = $link->query("INSERT INTO dsr_vinter_baadformand (formand, baad) VALUES ($medlem_id, $formandsbaad)");
+            $res = $link->query("INSERT INTO baadformand (formand, baad) VALUES ($medlem_id, $formandsbaad)");
 	    if (!$res) {
                $error[] = "Linie $lineno: Kunne ikke sætte <i>$medlem_id ($navn)</i> som bådformand: " . $link->error;
             }

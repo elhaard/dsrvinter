@@ -39,7 +39,7 @@ function get_setting($name, $link = false) {
   if (!$link) {
     $link = $GLOBALS['link'];
   }
-  $res = $link->query("SELECT * FROM dsr_vinter_settings WHERE name = '" . $link->escape_string($name) . "'");
+  $res = $link->query("SELECT * FROM settings WHERE name = '" . $link->escape_string($name) . "'");
   if ($res && $row = $res->fetch_assoc() ) {
     return $row['content'];
   }
