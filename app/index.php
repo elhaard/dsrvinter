@@ -1,7 +1,7 @@
 <?php
 
    $public_page = true;
-   include("header.php");
+   include("inc/header.php");
 
    echo "</head>\n<body>\n";
 
@@ -40,6 +40,6 @@
 <a href="glemt.php">Glemt password?</a>
 
 <?php
-  include("footer.php");
+  include("inc/footer.php");
 ?>
 

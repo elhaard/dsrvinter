@@ -1,7 +1,7 @@
 <?php
 
 
-include("header.php");
+include("inc/header.php");
 if (isset($user)) {
 
   $year = get_setting('year');
@@ -283,5 +283,5 @@ if (isset($user)) {
     }
   }
 }
-include("footer.php");
+include("inc/footer.php");
 ?>

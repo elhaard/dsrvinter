@@ -19,7 +19,7 @@ header("Pragma: no-cache");
 //define('DEBUG',TRUE);
 define('DEBUG',FALSE);
 
-include_once("sql.php");
+include_once("db.php");
 
 
 $authenticated = 0;

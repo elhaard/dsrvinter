@@ -1,4 +1,5 @@
 <?php
+$config = parse_ini_file($_SERVER['DOCUMENT_ROOT'].'/../config.ini');
 
 // include af denne fil medfører automatisk connection. Brug $link
 
@@ -9,7 +10,7 @@ function print_array(&$a) {
 }
 
 function sql_connect() {
-  $link = new mysqli("localhost", "nversion", "EPv0Jq8S0QTG72wLF9WPl3F", "nversion_dsrvinter2015");
+  $link = new mysqli("localhost", $config["dbuser"], $config["dbpassword"], $config["database"]);
 
   if ($link->connect_errno) {
     printf("Could not connect to database: %s\n", $mysqli->connect_error);
@@ -45,8 +46,5 @@ function get_setting($name, $link = false) {
   return "";
 }
 
-
-$admin_secret = 'BamseFar';
-$asr_kode="as6Jd.9qa2V7Y"; // asr, H2SO4
 $link=sql_connect();
 ?>

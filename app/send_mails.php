@@ -1,7 +1,7 @@
 <?php
 
 
-include("header.php");
+include("inc/header.php");
 if (isset($user) && $user['is_admin']) {
   echo "</head>\n<body>\n";
 
@@ -88,5 +88,5 @@ if (isset($user) && $user['is_admin']) {
     echo "<form action=\"baadvalg.php\" method=\"post\">$form_fields<input type=\"submit\" value=\"Tilbage til oversigten\"/></form>\n";
    
 }
-include("footer.php");
+include("inc/footer.php");
 ?>

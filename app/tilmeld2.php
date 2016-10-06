@@ -1,6 +1,6 @@
 <?php
 
-include("header.php");
+include("inc/header.php");
 if (isset($user)) {
 
 ?>
@@ -65,5 +65,5 @@ if (isset($user)) {
 <?php
 
 }
-include("footer.php");
+include("inc/footer.php");
 ?>

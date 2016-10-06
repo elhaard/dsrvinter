@@ -1,0 +1,5 @@
+; copy to config.ini and edit
+dbpassword=
+database=dsrvinter
+dbuser=dsrvinter
+
