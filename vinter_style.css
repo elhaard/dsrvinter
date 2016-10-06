@@ -1,0 +1,214 @@
+h2 { 
+  font-family: helvetica;
+  font-size: 26px;
+  color: #000033;
+  background-color: #99ccff;
+}
+
+h3 { 
+  font-family: helvetica;
+  font-size: 16px;
+  color: #99ccff;
+  background-color: #000033;
+ }
+
+p { 
+  font-family: helvetica;
+  font-size: 16px;
+ }
+
+li { 
+  font-family: helvetica;
+  font-size: 16px;
+
+ }
+
+td { 
+font-family: helvetica;
+  font-size: 16px;
+ }
+
+input { 
+  font-family: courier,helvetica;
+  font-weight: bold;
+  font-size: 20px;
+  color: #0000aa;
+
+}
+
+input[type=submit] {
+  cursor: pointer;
+}
+
+input:disabled {
+  color: #ccc;
+  text-decoration: strike-through;
+  cursor: not-allowed;
+}
+
+option { 
+  font-family: courier;
+  font-size: 20px;
+  color: #0000aa;
+ }
+
+div#min-baadtilmelding {
+  border: 1px solid #060;
+  color: #060;
+  padding-left: 1em;
+  border-radius: 8px;
+}
+
+div.administrator-info {
+  border: 1px solid #00d;
+  border-radius: 8px;
+  overflow: hidden;
+  padding-left: 1em;
+  padding-bottom: 10px;
+}
+
+div#roer-info {
+   background-color: #eee;
+   border: 1px solid #aaa;
+   border-radius: 8px;
+   padding-left: 1em;
+   margin-top: 1em;
+}
+
+div#ikke-tilmeldt {
+   padding-left: 1em;
+   margin-top: 1em;
+}
+
+div.baadinfo {
+   background-color: #aaa;
+   border: 1px solid #ccc;
+   width: 90%;
+   margin-top: 1em;
+   border-radius: 8px;
+   padding: 0px;
+   overflow: hidden;
+}
+
+div.baadinfo div.extra_info,
+div.baadinfo div.baad_deltagere {
+  padding-left: 1em;
+}
+
+div.baadinfo div.baad_header {
+   padding-left: 1em;
+   min-height: 1.7em;
+   padding-top: 5px;
+}
+
+div.baadinfo.ledig {
+   background-color: #afa;
+   border-color: #6a6;
+}
+
+div.baadinfo.ledig div.baad_header {
+   background-color: #6a6;
+}
+
+div.baadinfo.optaget {
+   background-color: #faa;
+   border-color: #d66;
+}
+
+div.baadinfo.optaget div.baad_header {
+   background-color: #d66;
+}
+
+
+div.baadinfo.min_baad {
+   background-color: #ffa;
+   border: 2px solid #dd6;
+}
+
+div.baadinfo.min_baad div.baad_header {
+   background-color: #dd6;
+}
+
+div.baad_deltagere {
+   padding-top: 0.5em;
+}
+
+div.baad_deltagere ul {
+  margin-top: 0px;
+}
+
+.login-boks {
+  background-color: #ddd;
+}
+
+table.login-boks th {
+  text-align: left;
+
+}
+
+.infotable {
+   background-color: #ddd;
+}
+table.infotable th {
+   text-align: left;
+}
+
+span.tilmeld_span {
+   margin-left: 3em;
+   display: inline;
+} 
+span.tilmeld_span form {
+   display: inline;
+   margin: 0px;
+}
+
+.error,
+.error li {
+   color: #c00;
+   font-weight: bold;
+}
+
+.ok {
+   color: #0c0;
+   font-weight: bold;
+}
+
+div.administrator-info form {
+  display: inline;
+  margin: 0px;
+  margin-right: 1em;
+}
+
+
+table.roer_tabel {
+  border: 1px solid black;
+  border-radius: 8px;
+}
+
+table.roer_tabel tr.person_raekke.ledig {
+  background: #fcc;
+}
+
+table.roer_tabel select,
+table.roer_tabel input {
+  font-size: 12px;
+  font-weight: normal;
+  color: black;
+  font-family: helvetica;
+}
+
+table.roer_tabel option.ledig {
+  color: #0a0;
+}
+table.roer_tabel option.optaget {
+  color: #a00;
+}
+table.roer_tabel option.taet-paa {
+  color: #a60;
+}
+table.roer_tabel option.overfuld {
+  text-decoration: line-through;
+}
+table.roer_tabel option.selected-boat {
+  text-decoration: underline;
+}
