@@ -36,6 +36,16 @@ input {
 
 }
 
+input[type=submit] {
+  cursor: pointer;
+}
+
+input:disabled {
+  color: #ccc;
+  text-decoration: strike-through;
+  cursor: not-allowed;
+}
+
 option { 
   font-family: courier;
   font-size: 20px;
@@ -170,3 +180,35 @@ div.administrator-info form {
 }
 
 
+table.roer_tabel {
+  border: 1px solid black;
+  border-radius: 8px;
+}
+
+table.roer_tabel tr.person_raekke.ledig {
+  background: #fcc;
+}
+
+table.roer_tabel select,
+table.roer_tabel input {
+  font-size: 12px;
+  font-weight: normal;
+  color: black;
+  font-family: helvetica;
+}
+
+table.roer_tabel option.ledig {
+  color: #0a0;
+}
+table.roer_tabel option.optaget {
+  color: #a00;
+}
+table.roer_tabel option.taet-paa {
+  color: #a60;
+}
+table.roer_tabel option.overfuld {
+  text-decoration: line-through;
+}
+table.roer_tabel option.selected-boat {
+  text-decoration: underline;
+}

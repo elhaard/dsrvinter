@@ -16,15 +16,31 @@ if (isset($user)) {
       <p>Du er vintervedligeholds-administrator!</p>
       <form action="import_baade.php" method="post">
          <?= $form_fields ?>
-         <input type="submit" value="Importér både" />
+         <input type="submit" value="Importer både" />
+      </form>
+      <form action="admin_baade.php" method="post">
+         <?= $form_fields ?>
+         <input type="submit" value="Administrer både" />
       </form>
       <form action="import_roere.php" method="post">
          <?= $form_fields ?>
-         <input type="submit" value="Importér roere" />
+         <input type="submit" value="Importer roere" />
+      </form>
+      <form action="admin_roere.php" method="post">
+         <?= $form_fields ?>
+         <input type="submit" value="Administrer roere" />
+      </form>
+      <form action="export_plan.php" method="post">
+         <?= $form_fields ?>
+         <input type="submit" value="Eksporter" />
       </form>
       <form action="send_mails.php" method="post" onsubmit="return confirm('Vil du sende invitationer til alle, der ikke allerede har fået invitation?')">
          <?= $form_fields ?>
          <input type="submit" value="Send invitationer" />
+      </form>
+      <form action="baadvalg.php" method="post">
+         <?= $form_fields ?>
+         <input type="submit" value="Genindlæs denne side" />
       </form>
     </div>
     <?php
@@ -212,7 +228,6 @@ if (isset($user)) {
       echo "<div class=\"baadinfo $class\"><div class=\"baad_header\"><b>" . $c_baad['navn'] . "</b> - $antal $tilmeldte_str.";
       if ($ledig) {
           echo " Ledig.";
-
           if (! isset($GLOBALS['formand'])) {
               ?>
               <span class="tilmeld_span">
@@ -247,6 +262,9 @@ if (isset($user)) {
       if ($formand_count == 0) {
          echo "<i>Ingen</i>\n";
       }
+
+      echo "<br />\nBåden er vurderet til " . $c_baad['max_timer'] . " timer. Der er i øjeblikket tilmeldt deltagere svarende til $timer timer."; 
+
       echo "</div>\n";
       if ($antal > 0) {
           echo "<div class=\"baad_deltagere\">\n";
