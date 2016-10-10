@@ -5,6 +5,7 @@ include("inc/header.php");
 if (isset($user) && $user['is_admin']) {
 
   $year = get_setting('year');
+  $booking_factor = ((int) get_setting('booking_percentage')) / 100;
   echo "</head>\n<body>\n";
 
   echo "<h2>Administer roere</h2>\n";
@@ -159,11 +160,11 @@ if (isset($user) && $user['is_admin']) {
                  if ($c_baad['ID'] == $person['baad']) {
                      echo '<option value="' . $c_baad['ID'] . '" selected="selected" class="selected-boat">' . $c_baad['navn'] . "</option>\n";
                  } else {
-                     if ($c_baad['timer']  > $c_baad['max_timer'] + 3 ) {
+                     if ($booking_factor * $c_baad['timer']  > $c_baad['max_timer'] + 3 ) {
                         $class="optaget overfuld";
-                     } elseif ($c_baad['timer']  >= $c_baad['max_timer']) {
+                     } elseif ($booking_factor * $c_baad['timer']  >= $c_baad['max_timer']) {
                         $class="optaget";
-                     } elseif ($c_baad['timer'] + $person['timer'] > $c_baad['max_timer']) {
+                     } elseif ($booking_factor * $c_baad['timer'] + $person['timer'] > $c_baad['max_timer']) {
                         $class="optaget taet-paa";
                      } else {
                         $class="ledig";

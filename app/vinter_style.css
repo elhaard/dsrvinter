@@ -212,3 +212,8 @@ table.roer_tabel option.overfuld {
 table.roer_tabel option.selected-boat {
   text-decoration: underline;
 }
+
+input.boom {
+	background-color:red;
+	color:yellow;
+}

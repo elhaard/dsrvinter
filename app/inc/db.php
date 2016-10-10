@@ -10,6 +10,7 @@ function print_array(&$a) {
 }
 
 function sql_connect() {
+  global $config;
   $link = new mysqli("localhost", $config["dbuser"], $config["dbpassword"], $config["database"]);
 
   if ($link->connect_errno) {

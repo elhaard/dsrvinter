@@ -32,7 +32,7 @@ if (isset($user)) {
 <p>Hej <?=$user['navn'] ?></p>
 
 <p>Vi vil lige sikre os, at de oplysninger, vi har om dig, er korrekte.</p>
-<p>Kontrollér venligst oplysningerne herunder, og ret dem, der er forkerte eler mangler</p>
+<p>Kontrollér venligst oplysningerne herunder, og ret dem, der er forkerte eller mangler</p>
 
 
 

@@ -5,15 +5,20 @@ include("inc/header.php");
 if (isset($user)) {
 
   $year = get_setting('year');
+  $booking_factor = ((int) get_setting('booking_percentage')) / 100;
   echo "</head>\n<body>\n";
 
   echo "<h2>Vintervedligehold $year for " . $user['navn'] . "</h2>\n";
 
 
   if ($user['is_admin']) {
+  	$booking_info = '';
+  	if ($booking_factor != 1) {
+  		$booking_info = "Bådene kan lige nu bookes med <b>" . get_setting('booking_percentage') . "%</b>.";
+  	}
     ?>
     <div class="administrator-info">
-      <p>Du er vintervedligeholds-administrator!</p>
+      <p>Du er vintervedligeholds-administrator! <?= $booking_info ?></p>
       <form action="import_baade.php" method="post">
          <?= $form_fields ?>
          <input type="submit" value="Importer både" />
@@ -30,6 +35,11 @@ if (isset($user)) {
          <?= $form_fields ?>
          <input type="submit" value="Administrer roere" />
       </form>
+      <form action="admin_settings.php" method="post">
+         <?= $form_fields ?>
+         <input type="submit" value="Indstillinger" />
+      </form>
+      
       <form action="export_plan.php" method="post">
          <?= $form_fields ?>
          <input type="submit" value="Eksporter" />
@@ -57,7 +67,7 @@ if (isset($user)) {
   } else {
       $res->close();
 
-      echo "<p>I år afhænger vintervedligehold af, hvor mange kilometer, man har roet.</p>";
+      echo "<p>Omfanget af vintervedligehold afhænger af, hvor mange kilometer, man har roet.</p>";
       echo "<p>Dine roede kilometer i $year svarer til kategori <b>" . $user['kategori_navn']
            . "</b>. Det betyder, at du forventes at deltage i vintervedligehold i mindst <b>"
            . $user['kategori_timer'] . " timer</b>.</p>\n";
@@ -97,8 +107,8 @@ if (isset($user)) {
 		if ($ledig_res) {
 		   $baadinfo = $ledig_res->fetch_assoc();
 		   if (isset($baadinfo)) {
-			if ($user['kategori_timer'] + $brugte_timer <= $baadinfo['max_timer']) {
-			   if ($link->query("UPDATE person SET baad = " . (int) $ny_baad . " WHERE ID = " . (int) $user['ID'] )) {
+			if ($user['kategori_timer'] + $brugte_timer <= $booking_factor * $baadinfo['max_timer']) {
+			   if ($link->query("UPDATE person SET wished_boat = " . (int) $ny_baad . ", baad = " . (int) $ny_baad . " WHERE ID = " . (int) $user['ID'] )) {
 			      echo "<p class=\"ok\">Din tilmelding er gemt.</p>\n";
                               $user['baad'] = $ny_baad;
                            } else {
@@ -218,7 +228,7 @@ if (isset($user)) {
       $ledig = false;
       if ( $c_baad['ID'] == $min_baad ) {
            $class .= 'min_baad';
-      } elseif ( $timer + $user['kategori_timer'] <= $c_baad['max_timer']) {
+      } elseif ( $timer + $user['kategori_timer'] <= $booking_factor * $c_baad['max_timer']) {
            $class .= ' ledig';
            $ledig = true;
       } else {
@@ -243,7 +253,11 @@ if (isset($user)) {
       } elseif ( $c_baad['ID'] == $min_baad ) {
           echo " Du er tilmeldt denne båd.";
       } else  {
-          echo " Ingen ledige pladser.";
+          echo " Ingen ledige pladser";
+          if ($booking_factor < 1)  {
+          	echo " i øjeblikket";
+          }
+          echo ".";
       }
       echo "</div>\n<div class=\"extra_info\">" . $c_baad['baadtype'];
       echo ". Vedligeholdes <b>" . $c_baad['periode'] . "</b>";
@@ -263,7 +277,11 @@ if (isset($user)) {
          echo "<i>Ingen</i>\n";
       }
 
-      echo "<br />\nBåden er vurderet til " . $c_baad['max_timer'] . " timer. Der er i øjeblikket tilmeldt deltagere svarende til $timer timer."; 
+      echo "<br />\nBåden er vurderet til " . $c_baad['max_timer'] . " timer.";
+      if ($booking_factor != 1) {
+      	echo " Lige nu er der åbent for tilmelding af op til " . ($booking_factor * $c_baad['max_timer']) . " timer.";
+      }
+      echo " Der er i øjeblikket tilmeldt deltagere svarende til $timer timer."; 
 
       echo "</div>\n";
       if ($antal > 0) {
