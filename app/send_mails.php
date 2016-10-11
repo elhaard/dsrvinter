@@ -5,7 +5,7 @@ include("inc/header.php");
 if (isset($user) && $user['is_admin']) {
   echo "</head>\n<body>\n";
 
-  require("mail_sender.php");
+  require("inc/mail_sender.php");
   echo "<h2>Sender mails</h2>\n";
 
   $recipients = array();
