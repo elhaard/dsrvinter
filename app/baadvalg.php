@@ -261,9 +261,6 @@ if (isset($user)) {
       }
       echo "</div>\n<div class=\"extra_info\">" . $c_baad['baadtype'];
       echo ". Vedligeholdes <b>" . $c_baad['periode'] . "</b>";
-      if (isset($c_baad['beskrivelse']) && trim($c_baad['beskrivelse']) != '') {
-          echo "<br/>\n<i>" . htmlspecialchars($c_baad['beskrivelse']) . "</i>";
-      }
       echo "<br/>\nBådformand: ";
       $formand_count = 0;
       foreach ($formaend[ $c_baad['ID'] ] as $c_formand) {
@@ -281,9 +278,16 @@ if (isset($user)) {
       if ($booking_factor != 1) {
       	echo " Lige nu er der åbent for tilmelding af op til " . ($booking_factor * $c_baad['max_timer']) . " timer.";
       }
-      echo " Der er i øjeblikket tilmeldt deltagere svarende til $timer timer."; 
+      echo " Der er i øjeblikket tilmeldt deltagere svarende til $timer timer.";
 
       echo "</div>\n";
+      
+      if (isset($c_baad['beskrivelse']) && trim($c_baad['beskrivelse']) != '') {
+      	echo "<div class=\"baadbeskrivelse\">" . nl2br(htmlspecialchars($c_baad['beskrivelse'])) . "</div>";
+      }  
+      
+      
+      
       if ($antal > 0) {
           echo "<div class=\"baad_deltagere\">\n";
           echo "<u>Tilmeldte:</u>";

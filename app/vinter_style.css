@@ -217,3 +217,23 @@ input.boom {
 	background-color:red;
 	color:yellow;
 }
+
+div.baadbeskrivelse {
+	width: 100%;
+	padding-top: 0.7em;
+	padding-left: 1em;
+	margin-top: 0.5em;
+	font-style: oblique;
+}
+
+div.baadinfo.ledig div.baadbeskrivelse {
+	border-top: 1px solid #6a6;
+}
+
+div.baadinfo.optaget div.baadbeskrivelse {
+	border-top: 1px solid #d66;
+}
+
+div.baadinfo.min_baad div.baadbeskrivelse {
+	border-top: 1px solid #dd6;
+}

@@ -2,6 +2,8 @@
 
 
 include("inc/header.php");
+include("inc/csvParse.php");
+
 if (isset($user) && $user['is_admin']) {
 
   ?>
@@ -16,10 +18,10 @@ if (isset($user) && $user['is_admin']) {
         $show_input = false;
 	// Find eksisterende både
         $baade = array();
-	$res = $link->query("SELECT * from baad");
+        $res = $link->query("SELECT * from baad");
         $error = array();
         $ok = array();
-	if ($res) {
+	    if ($res) {
             while ($row = $res->fetch_assoc()) {
                 $baade[ strtolower($row['navn']) ] = $row;
             }
@@ -28,37 +30,31 @@ if (isset($user) && $user['is_admin']) {
 
         // Find typer
         $typer = array();
-	$res = $link->query("SELECT * from baadtype");
-	if ($res) {
+        $res = $link->query("SELECT * from baadtype");
+	    if ($res) {
             while ($row = $res->fetch_assoc()) {
                 $typer[ strtolower($row['type']) ] = $row['ID'];
             }
             $res->close();
         }
 
-        $lines = preg_split("/(\r|\n)+/", $_POST['new_boats']);
-	$lineno = 0;
-        foreach ($lines as $line) {
-	  $lineno++;
-          $line = trim($line);
-          if ($line == "") {
-            continue;
-          }
-          $fields = explode(";", $line);
-
-	  if (count($fields) == 4) {
-	     $fields[] = '';
+        $lines = csvParse($_POST['new_boats']);
+        $lineno = 0;
+        foreach ($lines as $fields) {
+          $lineno++;
+          if (count($fields) == 4) {
+            $fields[] = '';
           } elseif (count($fields) != 5) {
-	     $error[] = "Linie $lineno: Forkert antal felter. Springer over...";
+            $error[] = "Linie $lineno: Forkert antal felter. Springer over...";
              continue;
           }
-	  $navn = trim($fields[0]);
+          $navn = trim($fields[0]);
           $type = trim($fields[1]);
           $timer = (int) trim($fields[2]);
           $saeson = trim($fields[3]);
           $beskrivelse = trim($fields[4]);
-	  if ($saeson == 'e' || $saeson == 'E' || preg_match("/efterår/i", $saeson) ) {
-	     $saeson = "efterår";
+          if ($saeson == 'e' || $saeson == 'E' || preg_match("/efterår/i", $saeson) ) {
+             $saeson = "efterår";
           } elseif ($saeson == 'f' || $saeson == 'F'|| preg_match("/forår/i", $saeson)) {
              $saeson = "forår";
           } else {
@@ -69,23 +65,23 @@ if (isset($user) && $user['is_admin']) {
              $timer = 0;
           }
           if (isset($typer[strtolower($type)])) {
-	     $type_id = $typer[strtolower($type)];
+          	$type_id = $typer[strtolower($type)];
           } else {
              // Opret baadtype
              $res = $link->query("INSERT INTO baadtype (type) VALUES ('" . $link->escape_string($type) . "')");
-	     if ($res) {
-		$type_id = $link->insert_id;
-		$typer[ strtolower($type) ] = $type_id;
-                $ok[] = "Oprettede ny bådtype <b>$type</b>";
+             if ($res) {
+               $type_id = $link->insert_id;
+               $typer[ strtolower($type) ] = $type_id;
+               $ok[] = "Oprettede ny bådtype <b>$type</b>";
              } else {
                 $error[] = "Linie $lineno: Kunne ikke oprette bådtypen <i>$type</i>. Opretter ikke båden <i>$navn</i>";
-		continue;
+                continue;
              }
           }
-	  if ($baade[strtolower($navn)]) {
+          if ($baade[strtolower($navn)]) {
              $id = $baade[strtolower($navn)]['ID'];
 
-	     $res = $link->query("UPDATE baad SET type = " . (int) $type_id .
+             $res = $link->query("UPDATE baad SET type = " . (int) $type_id .
                                  ", navn = '" . $link->escape_string($navn) . 
                                  "', max_timer = " . (int) $timer  .
                                  ", beskrivelse = '" . $link->escape_string($beskrivelse) .
@@ -97,7 +93,7 @@ if (isset($user) && $user['is_admin']) {
                 $error[] = "Linie $lineno: Kunne ikke opdatere eksisterende båd <i>$navn</i>: " . $link->error;
              }
           } else {
-	     $res = $link->query("INSERT INTO baad (type, navn, max_timer, beskrivelse, periode) VALUES (" .
+            $res = $link->query("INSERT INTO baad (type, navn, max_timer, beskrivelse, periode) VALUES (" .
                                  (int) $type_id . ", '" .
                                  $link->escape_string($navn) . "', " . 
                                  (int) $timer . ", '" .
@@ -107,7 +103,7 @@ if (isset($user) && $user['is_admin']) {
              if ($res) {
                 $id = $link->insert_id;
                 $ok[] = "Oprettede båden <i>$navn</i> med ID $id.";
-		$baade[strtolower($navn)] = array( 'ID' => $id,
+                $baade[strtolower($navn)] = array( 'ID' => $id,
                                                   'navn' => $navn,
                                                   'max_timer' => $timer,
                                                   'periode' => $saeson,
@@ -120,18 +116,18 @@ if (isset($user) && $user['is_admin']) {
         }
     
         if (count($error) > 0) {
-	  echo "<p class=\"error\">Der var fejl under importen: <ul>";
-	  foreach ($error as $err) {
-	     echo "<li>$err</li>\n";
+          echo "<p class=\"error\">Der var fejl under importen: <ul>";
+          foreach ($error as $err) {
+            echo "<li>$err</li>\n";
           }
-	  echo "</ul></p>\n";
+          echo "</ul></p>\n";
         }
         if (count($ok) > 0) {
-	  echo "<p class=\"ok\">Følgende gik godt: <ul>";
-	  foreach ($ok as $msg) {
-	    echo "<li>$msg</li>\n";
+          echo "<p class=\"ok\">Følgende gik godt: <ul>";
+          foreach ($ok as $msg) {
+             echo "<li>$msg</li>\n";
           }
-	  echo "</ul></p>\n";
+          echo "</ul></p>\n";
         }
     }
 
@@ -145,7 +141,7 @@ if (isset($user) && $user['is_admin']) {
   Eksempel:<br/>
   &nbsp;&nbsp;<code>Nanna;4-åres inrigger;300;f;Skal blot pletlakeres</code></p>
 
-  <p>Du skal <b>ikke</b> have kolonneoverskrifter eller gåseøjne!</p>
+  <p>Du skal <b>ikke</b> have kolonneoverskrifter!</p>
   <p>Det er vigtigt, at den samme bådtype er stavet ens hver gang - ellers oprettes to forskellige bådtyper. Sæson kan være <b><code>f</code></b> (forår)
    eller <b><code>e</code></b> (efterår).</p>
 
