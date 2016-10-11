@@ -14,9 +14,18 @@ if (isset($user) && $user['is_admin']) {
 
   <?php
     $show_input = true;
-    if (isset($_POST['import_boats']) && $_POST['import_boats'] == '1' && isset($_POST['new_boats'])) {
+    if (    isset($_POST['import_boats'])
+         && (  (    $_POST['import_boats'] == '1'
+    	         && isset($_POST['new_boats'])
+         	   )
+            || (    $_POST['import_boats'] == '2'
+    	         && isset($_FILES['boat_file'])
+         	   )
+            )
+      ) {
         $show_input = false;
-	// Find eksisterende både
+        
+        // Find eksisterende både
         $baade = array();
         $res = $link->query("SELECT * from baad");
         $error = array();
@@ -37,8 +46,17 @@ if (isset($user) && $user['is_admin']) {
             }
             $res->close();
         }
-
-        $lines = csvParse($_POST['new_boats']);
+		$input = '';
+        if ( $_POST['import_boats'] == '1' ) {
+        	$input = $_POST['new_boats'];
+        } else {
+        	$file = $_FILES["boat_file"]["tmp_name"];
+        	$fh = fopen($file, "r");
+        	$input = fread($fh, filesize($file));
+        	fclose($fh);
+        }
+        
+        $lines = csvParse($input);
         $lineno = 0;
         foreach ($lines as $fields) {
           $lineno++;
@@ -153,6 +171,18 @@ if (isset($user) && $user['is_admin']) {
        <br/>
        <input type="submit" value="Opret både" />
     </form>
+    <br />
+    <form action="import_baade.php" method="post" enctype="multipart/form-data">
+         <input type="hidden" name="import_boats" value="2" />
+         <?= $form_fields ?>
+         Du kan også uploade en CSV-fil (uden overskrifter) i stedet for:
+		 <input type="file" name="boat_file" id="boat_file">
+         <br/>
+         <input type="submit" value="Upload fil med både" />
+    </form>
+    
+    </p>
+    
   <?php
 
     }
