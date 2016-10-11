@@ -1,12 +1,8 @@
 <?php
   require_once("Mail.php");
   function send_email( $subject, $template, $user ) {
-      $smtp = Mail::factory('smtp',
-          array ('host' => 'chimay.elgaard.net',
-          'port' => 26,
-          'auth' => true,
-          'username' => 'sasltest',
-          'password' => 'ged'));
+      $smtp = Mail::factory('sendmail',
+          array ());
 
       $res = false;
       if (isset($user['email']) && trim($user['email'])) {
