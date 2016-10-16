@@ -146,7 +146,7 @@ if (isset($user) && $user['is_admin']) {
 
         <tr class="person_raekke <?=$class?>">
            <td><?=$mark_start?><?=$id?><?=$mark_end?></td>
-           <td title="Eget ønske: <?= $person['wished_boat'] ? ($baadeById[ $person['wished_boat']]['navn'] || 'ukendt båd') : 'intet' ?>"><?=$person['navn']?></td>
+           <td title="Eget ønske: <?= $person['wished_boat'] ? $baadeById[ $person['wished_boat']]['navn'] : 'intet' ?>"><?=$person['navn']?></td>
            <td><?=$person['timer']?></td>
            <td><form class="table-button-form" action="admin_roere.php#mark" method="POST">
                  <?=$form_fields?>
