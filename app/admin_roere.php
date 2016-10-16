@@ -146,7 +146,7 @@ if (isset($user) && $user['is_admin']) {
 
         <tr class="person_raekke <?=$class?>">
            <td><?=$mark_start?><?=$id?><?=$mark_end?></td>
-           <td><?=$person['navn']?></td>
+           <td title="Eget ønske: <?= $person['wished_boat'] ? ($baadeById[ $person['wished_boat']] || 'ukendt båd') : 'intet' ?>"><?=$person['navn']?></td>
            <td><?=$person['timer']?></td>
            <td><form class="table-button-form" action="admin_roere.php#mark" method="POST">
                  <?=$form_fields?>
@@ -160,11 +160,11 @@ if (isset($user) && $user['is_admin']) {
                  if ($c_baad['ID'] == $person['baad']) {
                      echo '<option value="' . $c_baad['ID'] . '" selected="selected" class="selected-boat">' . $c_baad['navn'] . "</option>\n";
                  } else {
-                     if ($booking_factor * $c_baad['timer']  > $c_baad['max_timer'] + 3 ) {
+                     if ($c_baad['timer']  > $booking_factor * $c_baad['max_timer'] + 3 ) {
                         $class="optaget overfuld";
-                     } elseif ($booking_factor * $c_baad['timer']  >= $c_baad['max_timer']) {
+                     } elseif ($c_baad['timer']  >= $booking_factor * $c_baad['max_timer']) {
                         $class="optaget";
-                     } elseif ($booking_factor * $c_baad['timer'] + $person['timer'] > $c_baad['max_timer']) {
+                     } elseif ($c_baad['timer'] + $person['timer'] > $booking_factor * $c_baad['max_timer']) {
                         $class="optaget taet-paa";
                      } else {
                         $class="ledig";
