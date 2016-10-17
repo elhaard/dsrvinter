@@ -10,7 +10,7 @@
           $email = trim($user['email']);
 
           $mail_headers = array(
-                              'From'                      => "DSR Materieludvalg - svar ikke! <dsr@elgaard.net>",
+                              'From'                      => "DSR Materieludvalg <vintervedligehold@danskestudentersroklub.dk>",
           					  'Reply-To'                  => "Materielforvalteren <materiel@danskestudentersroklub.dk>, Jørgen Elgaard Larsen <jel@elgaard.net>",
                               'Content-Transfer-Encoding' => "8bit",
 						      'Content-Type'              => 'text/plain; charset="utf8"',

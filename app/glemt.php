@@ -28,8 +28,8 @@ header('Content-Type: text/html; charset=utf-8');
       echo "<p>Hvis du har glemt dit password - eller ikke har fået et - kan du få det tilsendt.</p>";
    } elseif (isset($_POST['medl_nr']) && trim($_POST['medl_nr']) != '' && ( (int) trim($_POST['medl_nr'])) > 0) {
 	$medl_nr =  (int) trim($_POST['medl_nr']);
-	require("sql.php");
-        require("mail_sender.php");
+	require("inc/db.php");
+        require("inc/mail_sender.php");
 	$res = $link->query("SELECT * FROM  person WHERE ID = " . (int) $medl_nr);
         if ($res) {
 	    $person = $res->fetch_assoc();
