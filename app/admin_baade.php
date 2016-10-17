@@ -12,41 +12,52 @@ if (isset($user) && $user['is_admin']) {
   echo "<form action=\"baadvalg.php\" method=\"post\">$form_fields<input type=\"submit\" value=\"Tilbage til oversigten\" /></form>\n";
 
 
-  if (isset($_POST['update_boat']) && $_POST['update_boat'] == '1' && !isset($formand)) {
-     if (isset($_POST['valgt_baad'])) {
-        $ny_baad = (int) trim($_POST['valgt_baad']);
-
-	if ($ny_baad > 0) {
-	   $time_res = $link->query("SELECT IFNULL(SUM(k.timer),0) FROM
-                                     person p
-                                     JOIN roer_kategori k ON (k.ID = p.kategori)
-				     WHERE p.baad = " . (int) $ny_baad);
-           if ($time_res) {
-              $time_row = $time_res->fetch_array();
-              if ($time_row) {
-		$brugte_timer = $time_row[0];
-		$ledig_res = $link->query("SELECT * from baad WHERE ID = " . (int) $ny_baad);
-		if ($ledig_res) {
-		   $baadinfo = $ledig_res->fetch_assoc();
-		   if (isset($baadinfo)) {
-			if ($user['kategori_timer'] + $brugte_timer <= $baadinfo['max_timer']) {
-			   if ($link->query("UPDATE person SET baad = " . (int) $ny_baad . " WHERE ID = " . (int) $user['ID'] )) {
-			      echo "<p class=\"ok\">Din tilmelding er gemt.</p>\n";
-                              $user['baad'] = $ny_baad;
-                           } else {
-			      echo "<p class=\"error\">Fejl: Ændringerne kunne ikke gemmes.</p>\n";
-                           }
-                       } else {
-			   echo "<p class=\"error\">Der er ikke flere ledige pladser på <b>" . $baadinfo['navn'] . "</b></p>\n";
-                       }
-                   }
-                   $ledig_res->close();
-                }
-              }
-              $time_res->close();
-           }
-       }
-     }
+  if (isset($_POST['action'])) {
+	$action = $_POST['action'];
+	if ($action == 'delete_boat') {
+	  if (isset($_POST['boatID']) && $boatID = (int) $_POST['boatID']) {
+		$res = $link->query("DELETE FROM baad WHERE ID =" . $boatID . " AND ID NOT IN (SELECT baad FROM person)");
+		if ($res) {
+		  echo "<p class=\"error\">Kunne ikke slette båd</p>";
+		  error_log("Could not delete boat: " . $link->error);
+		}
+	  }
+	} else if ($action == 'edit_boat') {
+	  if (isset($_POST['boatID']) && $boatID = (int) $_POST['boatID']) {
+		$sth = $link->prepare("UPDATE baad SET navn = ?, type = ?, periode = ?, max_timer = ?, beskrivelse = ? WHERE ID = ?");
+		if ($sth) {
+		  $sth->bind_param("sisisi",
+		  		            $_POST['name'],
+		  					$_POST['type'],
+		  					$_POST['period'],
+		  					$_POST['hours'],
+		  					$_POST['description'],
+		  		            $boatID
+		  		);
+		  $res = $sth->execute();
+		}
+		if (!$res) {
+		  echo "<p class=\"error\">Kunne ikke gemme båd</p>";
+		  error_log("Could not update boat: " . $link->error);
+		}
+	  }
+	} else if ($action == 'new_boat') {
+	   $sth = $link->prepare("INSERT INTO baad (navn, type, periode, max_timer, beskrivelse) VALUES (?,?,?,?,?)");
+	   if ($sth) {
+		 $sth->bind_param("sisisi",
+		  		            $_POST['name'],
+		  					$_POST['type'],
+		  					$_POST['period'],
+		  					$_POST['hours'],
+		  					$_POST['description']
+		  		);
+         $res = $sth->execute();
+	   }
+	   if (!$res) {
+	     echo "<p class=\"error\">Kunne ikke oprette båd</p>";
+	     error_log("Could not insert boat: " . $link->error);
+	   }
+	}
   }
 
   $baade = array();
@@ -123,6 +134,12 @@ if (isset($user) && $user['is_admin']) {
 
     ?>
 
+    <form class="table-button-form" action="edit_boat.php" method="POST">
+        <?=$form_fields?>
+        <input type="hidden" name="action" value="new_boat" />
+        <input type="submit" value="Opret ny båd" />
+    </form>
+    
     <h3>Bådliste</h3>
     <table class="baad_tabel">
       <tr>
@@ -171,10 +188,10 @@ if (isset($user) && $user['is_admin']) {
            <td><?=$antal?></td>
            <td><?=$timer?></td>
            <td><?=$c_baad['max_timer']?></td>
-           <td><form class="table-button-form" action="admin_baade.php" method="POST">
+           <td><form class="table-button-form" action="edit_boat.php" method="POST">
                  <?=$form_fields?>
                  <input type="hidden" name="action" value="edit_boat" />
-                 <input type="hidden" name="baadID" value="<?=$c_baad['ID']?>" />
+                 <input type="hidden" name="boatID" value="<?=$c_baad['ID']?>" />
                  <input type="submit" value="Rediger" />
                </form>
            </td>
@@ -182,7 +199,7 @@ if (isset($user) && $user['is_admin']) {
            <td><form class="table-button-form" action="admin_baade.php" method="POST" onsubmit="return confirm('Er du sikker på, at du vil slette <?= $c_baad['navn'] ?>?')" >
                  <?=$form_fields?>
                  <input type="hidden" name="action" value="delete_boat" />
-                 <input type="hidden" name="baadID" value="<?=$c_baad['ID']?>" />
+                 <input type="hidden" name="boatID" value="<?=$c_baad['ID']?>" />
                  <input type="submit" value="Slet" <?= ($antal > 0) ? 'disabled="disabled" title="Båden kan ikke slettes, da der er tilmeldte roere."' : ''?>/>
                </form>
            </td>
