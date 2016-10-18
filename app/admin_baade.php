@@ -14,6 +14,19 @@ if (isset($user) && $user['is_admin']) {
 
   if (isset($_POST['action'])) {
 	$action = $_POST['action'];
+	if ( isset($_POST['new_type']) && ($action == 'edit_boat' || $action == 'new_boat')) {
+		$newType = trim($_POST['new_type']);
+		if ($newType) {
+			$sth = $link->prepare('INSERT INTO baadtype (type) VALUES (?)');
+			if ($sth) {
+				$sth->bind_param("s", $newType);
+				$sth->execute();
+				$newTypeID = $link->insert_id;
+			}
+		}
+	}
+	
+	
 	if ($action == 'delete_boat') {
 	  if (isset($_POST['boatID']) && $boatID = (int) $_POST['boatID']) {
 		$res = $link->query("DELETE FROM baad WHERE ID =" . $boatID . " AND ID NOT IN (SELECT baad FROM person)");
@@ -28,7 +41,7 @@ if (isset($user) && $user['is_admin']) {
 		if ($sth) {
 		  $sth->bind_param("sisisi",
 		  		            $_POST['name'],
-		  					$_POST['type'],
+		  					$newTypeID ? $newTypeID : $_POST['type'],
 		  					$_POST['period'],
 		  					$_POST['hours'],
 		  					$_POST['description'],
@@ -44,9 +57,9 @@ if (isset($user) && $user['is_admin']) {
 	} else if ($action == 'new_boat') {
 	   $sth = $link->prepare("INSERT INTO baad (navn, type, periode, max_timer, beskrivelse) VALUES (?,?,?,?,?)");
 	   if ($sth) {
-		 $sth->bind_param("sisisi",
+		 $sth->bind_param("sisis",
 		  		            $_POST['name'],
-		  					$_POST['type'],
+		  					$newTypeID ? $newTypeID : $_POST['type'],
 		  					$_POST['period'],
 		  					$_POST['hours'],
 		  					$_POST['description']

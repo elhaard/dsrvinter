@@ -46,7 +46,11 @@ if (isset($user) && $user['is_admin']) {
     <form action="admin_baade.php" method="POST">
         <?=$form_fields?>
         <input type="hidden" name="action" value="<?= $edit ? 'edit_boat' : 'new_boat' ?>" />
-        
+<?php
+      if ($edit) {
+      	echo "<input type=\"hidden\" name=\"boatID\" value=\"" . $boatID . "\" />";
+      }
+?>        
         <label for="name">Navn:</label>
         <input type="text" id="name" name="name" size="50" value="<?= $edit ? $boat['navn'] : '' ?>" /><br/>
         
