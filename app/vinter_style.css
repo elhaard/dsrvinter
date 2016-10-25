@@ -223,7 +223,10 @@ table.baad_tabel tr.baad_raekke.optaget {
 table.baad_tabel tr.baad_raekke.ledig {
   background: #cfc;
 }
-
+table.baad_tabel tr.baad_raekke.overfyldt td:nth-child(5) {
+    border: 3px solid #fd0;
+    font-weight: bold;
+}
 
 input.boom {
 	background-color:red;

@@ -190,6 +190,9 @@ if (isset($user) && $user['is_admin']) {
       } else {
           $class .= ' optaget';
           $status = 'Optaget';
+	  if ($timer >= $c_baad['max_timer'] + 3 ) {
+             $class .= ' overfyldt';
+	  }
       }
       
       ?>
