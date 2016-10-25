@@ -198,20 +198,32 @@ table.roer_tabel input {
 }
 
 table.roer_tabel option.ledig {
-  color: #0a0;
+  color: #fff;
+  font-weight: bold;
+  background: #ffa;
 }
 table.roer_tabel option.optaget {
-  color: #a00;
+  background: #fcc;
+  color: #000;
 }
 table.roer_tabel option.taet-paa {
-  color: #a60;
+  color: #a80;
 }
 table.roer_tabel option.overfuld {
   text-decoration: line-through;
 }
 table.roer_tabel option.selected-boat {
   text-decoration: underline;
+  color: #004
 }
+
+table.baad_tabel tr.baad_raekke.optaget {
+  background: #fcc;
+}
+table.baad_tabel tr.baad_raekke.ledig {
+  background: #ffc;
+}
+
 
 input.boom {
 	background-color:red;
