@@ -79,10 +79,6 @@ if (isset($user) && $user['is_admin']) {
         <label for="tlf">Telefon:</label>
         <input type="text" id="tlf" name="tlf" size="20" value="<?= $person['tlf'] ?>" /><br/>
 
-       <!-- <label for="timer">Timer:</label>
-            <input type="text" id="timer" name="timer" size="4" value="<?= $person['timer'] ?>" /><br/>
-       -->
-
 <?php
       if ($edit) {
 ?>

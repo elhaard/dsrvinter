@@ -290,7 +290,7 @@ if (isset($user)) {
           echo "<ul class=\"deltager_liste\">\n";
 	  foreach ($c_tilmeldte as $c_tilmeldt) {
              echo "<li>" . $c_tilmeldt['ID'] . ": " . $c_tilmeldt['navn'];
-	     if ($c_tilmeldt['is_formand']) {
+	     if (isset($c_tilmeldt['is_formand']) && $c_tilmeldt['is_formand']) {
                 echo " (bådformand)";
              }
              echo "</li>\n";
