@@ -78,7 +78,7 @@ if (isset($user) && $user['is_admin']) {
 	   $pw = generate_password();
            $sth->bind_param("issssi",
                             $id,
-	  		    $_POST['name'],
+	  		    $_POST['navn'],
 			    $_POST['email'],
 			    $_POST['tlf'],
 			    $pw,

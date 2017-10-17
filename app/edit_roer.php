@@ -70,8 +70,8 @@ if (isset($user) && $user['is_admin']) {
      }
 ?>
 
-        <label for="name">Navn:</label>
-        <input type="text" id="name" name="name" size="50" value="<?= $person['navn'] ?>" /><br/>
+        <label for="navn">Navn:</label>
+        <input type="text" id="navn" name="navn" size="50" value="<?= $person['navn'] ?>" /><br/>
 
         <label for="email">Email:</label>
         <input type="text" id="email" name="email" size="50" value="<?= $person['email'] ?>" /><br/>
