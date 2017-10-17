@@ -36,7 +36,7 @@ if (isset($user) && $user['is_admin']) {
 		"is_admin" => 0
                ];
      if ($edit) {
-       $res = $link->query("SELECT * FROM person WHERE ID = $personID");
+       $res = $link->query("SELECT * FROM person WHERE ID = " . $personID);
        if (! $res) {
           echo "<p class=\"error\">Fejl: Kunne ikke finde roer!!!</p>";
             $edit = false;
@@ -61,7 +61,8 @@ if (isset($user) && $user['is_admin']) {
         <label for="rowerID">Medlemsnummer:</label>
 <?php
      if ($edit) {
-       echo "<b> " . $person['ID'] . "</b><br/>\n";
+       echo "<span id=\"rowerID\"><b> " . $person['ID'] . "</b></span><br/>\n";
+       echo "<input type=\"hidden\" name=\"personID\" value=\"" . $personID . "\" />";
      } else {
 ?>
         <input type="text" id="rowerID" name="rowerID" size="5" value="<?= $person['ID'] ?>" /><br/>
@@ -69,7 +70,6 @@ if (isset($user) && $user['is_admin']) {
      }
 ?>
 
-      	<input type="hidden" name="rowerID" value="<?= $personID ?>" />
         <label for="name">Navn:</label>
         <input type="text" id="name" name="name" size="50" value="<?= $person['navn'] ?>" /><br/>
 

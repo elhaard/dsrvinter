@@ -1,6 +1,5 @@
 <?php
 
-
 include("inc/header.php");
 if (isset($user) && $user['is_admin']) {
 
@@ -15,11 +14,11 @@ if (isset($user) && $user['is_admin']) {
   echo "<form action=\"edit_roer.php\" method=\"post\">$form_fields<input type=\"hidden\" name=\"action\" value=\"new\" /><input type=\"submit\" value=\"Ny roer\" /></form>\n";
 
 
-  if (isset($_POST['action']) && $_POST['action'] && isset($_POST['personID']) && (int) $_POST['personID']) {
+  if (isset($_POST['action']) && $_POST['action'] && isset($_POST['personID'])) {
      $id = (int) $_POST['personID'];
      $action = trim($_POST['action']);
 
-     if ($action == 'change_rower_boat') {
+     if ($action == 'change_rower_boat' && $id) {
 	$baadID = isset($_POST['baadID']) ? (int) trim($_POST['baadID']) : 0;
         $be_formand = ( isset($_POST['be_formand']) && trim($_POST['be_formand']) );
 	   $newBoat = ( $baadID > 0 ) ? (int) $baadID : 'NULL';
@@ -39,7 +38,7 @@ if (isset($user) && $user['is_admin']) {
           } else {
               echo "<p class=\"error\">Kunne ikke sætte ny båd</p>\n";
           }
-     } elseif ($action == 'delete_rower') {
+     } elseif ($action == 'delete_rower' && $id) {
          if ( $link->query("DELETE FROM baadformand WHERE formand = $id LIMIT 1") ) {
             if ( $link->query("DELETE FROM person WHERE ID = $id LIMIT 1") ) {
 		echo '<p class="ok">Slettede personen</p>';
@@ -51,44 +50,37 @@ if (isset($user) && $user['is_admin']) {
          }
 
 
-     } else if ($action == 'edit_rower') {
-       if (isset($_POST['rowerID']) && $personID = (int) $_POST['rowerID']) {
-         $sth = $link->prepare("UPDATE person SET navn = ?, email = ?, tlf = ?, kode = ?, is_admin = ? WHERE ID = ?");
-         $res = false;
-         if ($sth) {
-	   $sth->bind_param("ssssii",
-			    $_POST['navn'],
-                	    $_POST['email'],
-		  	    $_POST['tlf'],
-                    	    $_POST['kode'],
-          		    (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0,
-  		            $personID
-	       		   );
-           $res = $sth->execute();
-         }
-	 if (!$res) {
-	   echo "<p class=\"error\">Kunne ikke gemme roer</p>";
-	   error_log("Could not update rower: " . $link->error);
-	 }
+     } else if ($action == 'edit_rower' && $id) {
+       $sth = $link->prepare("UPDATE person SET navn = ?, email = ?, tlf = ?, kode = ?, is_admin = ? WHERE ID = ?");
+       $res = false;
+       if ($sth) {
+         $sth->bind_param("ssssii",
+			  $_POST['navn'],
+                	  $_POST['email'],
+		  	  $_POST['tlf'],
+                    	  $_POST['kode'],
+          		  (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0,
+  		          $id
+	       		 );
+         $res = $sth->execute();
+       }
+       if (!$res) {
+         echo "<p class=\"error\">Kunne ikke gemme roer</p>";
+         error_log("Could not update rower: " . $link->error);
        }
      } else if ($action == 'new_rower') {
-       $personID = 0;
-       if (isset($_POST['rowerID'])) {
-         $personID = (int) $_POST['rowerID'];
-       }
-       if ($personID > 0) {
+       if ($id > 0) {
          $res = false;
        	 $sth = $link->prepare("INSERT INTO person (ID, navn, email, tlf, kode, is_admin) VALUES (?,?,?,?,?,?)");
          if ($sth) {
            $sth->bind_param("issssi",
-                            $personID,
+                            $id,
 	  		    $_POST['name'],
 			    $_POST['email'],
 			    $_POST['tlf'],
 			    generate_password(),
           		    (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0
 			   );
-
            $res = $sth->execute();
 	 }
 	 if (!$res) {
