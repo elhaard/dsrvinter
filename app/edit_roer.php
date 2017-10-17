@@ -94,12 +94,12 @@ if (isset($user) && $user['is_admin']) {
 ?>        
 
         <label for="rower_admin">Administrator:</label>
-        <input type="checkbox" id="rower_admin" name="rower_admin" value="1" <? $person['is_admin'] ? 'checked="checked"' : '' ?> /><br/>
+        <input type="checkbox" id="rower_admin" name="rower_admin" value="1" <?= $person['is_admin'] ? 'checked="checked"' : '' ?> /><br/>
 
         
         <input type="submit" value="<?= $edit ? 'Gem' : 'Opret' ?>"/>
     </form>
-    <form action="admin_roere.php" method="post">$form_fields<input type="submit" value="Annuller" /></form>
+    <form action="admin_roere.php" method="post"><?= $form_fields ?><input type="submit" value="Annuller" /></form>
 
    <?php
 
