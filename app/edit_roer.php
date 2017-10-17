@@ -58,14 +58,14 @@ if (isset($user) && $user['is_admin']) {
         <?=$form_fields?>
         <input type="hidden" name="action" value="<?= $edit ? 'edit_rower' : 'new_rower' ?>" />
 
-        <label for="rowerID">Medlemsnummer:</label>
+        <label for="personID">Medlemsnummer:</label>
 <?php
      if ($edit) {
-       echo "<span id=\"rowerID\"><b> " . $person['ID'] . "</b></span><br/>\n";
+       echo "<span id=\"personID\"><b> " . $person['ID'] . "</b></span><br/>\n";
        echo "<input type=\"hidden\" name=\"personID\" value=\"" . $personID . "\" />";
      } else {
 ?>
-        <input type="text" id="rowerID" name="rowerID" size="5" value="<?= $person['ID'] ?>" /><br/>
+        <input type="text" id="personID" name="personID" size="5" value="<?= $person['ID'] ?>" /><br/>
 <?php
      }
 ?>
