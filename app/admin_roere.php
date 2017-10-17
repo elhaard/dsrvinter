@@ -54,12 +54,13 @@ if (isset($user) && $user['is_admin']) {
        $sth = $link->prepare("UPDATE person SET navn = ?, email = ?, tlf = ?, kode = ?, is_admin = ? WHERE ID = ?");
        $res = false;
        if ($sth) {
+         $rower_admin = (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0;
          $sth->bind_param("ssssii",
 			  $_POST['navn'],
                 	  $_POST['email'],
 		  	  $_POST['tlf'],
                     	  $_POST['kode'],
-          		  (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0,
+          		  $rower_admin,
   		          $id
 	       		 );
          $res = $sth->execute();
@@ -73,13 +74,15 @@ if (isset($user) && $user['is_admin']) {
          $res = false;
        	 $sth = $link->prepare("INSERT INTO person (ID, navn, email, tlf, kode, is_admin) VALUES (?,?,?,?,?,?)");
          if ($sth) {
+           $rower_admin = (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0;
+	   $pw = generate_password();
            $sth->bind_param("issssi",
                             $id,
 	  		    $_POST['name'],
 			    $_POST['email'],
 			    $_POST['tlf'],
-			    generate_password(),
-          		    (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0
+			    $pw,
+          		    $rower_admin
 			   );
            $res = $sth->execute();
 	 }
