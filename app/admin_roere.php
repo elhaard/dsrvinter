@@ -11,6 +11,9 @@ if (isset($user) && $user['is_admin']) {
   echo "<h2>Administer roere</h2>\n";
 
   echo "<form action=\"baadvalg.php\" method=\"post\">$form_fields<input type=\"submit\" value=\"Tilbage til oversigten\" /></form>\n";
+  echo "<form action=\"import_roere.php\" method=\"post\">$form_fields<input type=\"submit\" value=\"Importer roere\" /></form>\n";
+  echo "<form action=\"edit_roer.php\" method=\"post\">$form_fields<input type=\"hidden\" name=\"action\" value=\"new\" /><input type=\"submit\" value=\"Ny roer\" /></form>\n";
+
 
   if (isset($_POST['action']) && $_POST['action'] && isset($_POST['personID']) && (int) $_POST['personID']) {
      $id = (int) $_POST['personID'];
@@ -46,6 +49,55 @@ if (isset($user) && $user['is_admin']) {
          } else {
 	       echo '<p class="error">Kunne ikke slette formandsoplysninger - personen er ikke slettet</p>';
          }
+
+
+     } else if ($action == 'edit_rower') {
+       if (isset($_POST['rowerID']) && $personID = (int) $_POST['rowerID']) {
+         $sth = $link->prepare("UPDATE person SET navn = ?, email = ?, tlf = ?, kode = ?, is_admin = ? WHERE ID = ?");
+         $res = false;
+         if ($sth) {
+	   $sth->bind_param("ssssii",
+			    $_POST['navn'],
+                	    $_POST['email'],
+		  	    $_POST['tlf'],
+                    	    $_POST['kode'],
+          		    (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0,
+  		            $personID
+	       		   );
+           $res = $sth->execute();
+         }
+	 if (!$res) {
+	   echo "<p class=\"error\">Kunne ikke gemme roer</p>";
+	   error_log("Could not update rower: " . $link->error);
+	 }
+       }
+     } else if ($action == 'new_rower') {
+       $personID = 0;
+       if (isset($_POST['rowerID'])) {
+         $personID = (int) $_POST['rowerID'];
+       }
+       if ($personID > 0) {
+         $res = false;
+       	 $sth = $link->prepare("INSERT INTO person (ID, navn, email, tlf, kode, is_admin) VALUES (?,?,?,?,?,?)");
+         if ($sth) {
+           $sth->bind_param("issssi",
+                            $personID,
+	  		    $_POST['name'],
+			    $_POST['email'],
+			    $_POST['tlf'],
+			    generate_password(),
+          		    (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0
+			   );
+
+           $res = $sth->execute();
+	 }
+	 if (!$res) {
+	   echo "<p class=\"error\">Kunne ikke oprette roer</p>";
+           error_log("Could not insert rower: " . $link->error);
+         }
+       } else {
+         echo "<p class=\"error\">Ugyldigt medlemsnummer!</p>";
+       }
      } else {
          echo "<p class=\"error\">Ukendt action: '$action'</p>\n";
      }
@@ -179,11 +231,11 @@ if (isset($user) && $user['is_admin']) {
                </form>
            </td>
 
-           <td><form class="table-button-form" action="admin_roere.php" method="POST">
+           <td><form class="table-button-form" action="edit_roer.php" method="POST">
                  <?=$form_fields?>
-                 <input type="hidden" name="action" value="show_editor" />
+                 <input type="hidden" name="action" value="edit" />
                  <input type="hidden" name="personID" value="<?=$id?>" />
-                 <input type="submit" value="Rediger" disabled="disabled"/>
+                 <input type="submit" value="Rediger" />
                </form>
                <form class="table-button-form" action="admin_roere.php" method="POST" onsubmit="return confirm('Er du sikker på, at du vil slette <?= $person['navn'] ?>?')" >
                  <?=$form_fields?>

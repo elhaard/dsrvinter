@@ -27,10 +27,6 @@ if (isset($user)) {
          <?= $form_fields ?>
          <input type="submit" value="Administrer både" />
       </form>
-      <form action="import_roere.php" method="post">
-         <?= $form_fields ?>
-         <input type="submit" value="Importer roere" />
-      </form>
       <form action="admin_roere.php" method="post">
          <?= $form_fields ?>
          <input type="submit" value="Administrer roere" />
