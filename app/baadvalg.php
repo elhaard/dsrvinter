@@ -213,9 +213,11 @@ if (isset($user)) {
 
     foreach( $baade as $c_baad ) {
       $hidden_class='';
+      $hidden_text='';
       if ($c_baad['hidden']) {
       	 if ($user['is_admin']) {
-	    $hidden_class="hidden_boat";
+	    $hidden_class="hidden_boat ";
+	    $hidden_text=' (skjult båd)';
 	 } else {
       	   break;
 	 }
@@ -239,7 +241,7 @@ if (isset($user)) {
           $class .= 'optaget';
       }
       $tilmeldte_str = ($antal == 1) ? "tilmeldt" : "tilmeldte";
-      echo "<div class=\"baadinfo $class\"><div class=\"baad_header\"><b>" . $c_baad['navn'] . "</b> - $antal $tilmeldte_str.";
+      echo "<div class=\"baadinfo $class\"><div class=\"baad_header\"><b>" . $c_baad['navn'] . $hidden_text . "</b> - $antal $tilmeldte_str.";
       if ($ledig) {
           echo " Ledig.";
           if (! isset($GLOBALS['formand'])) {

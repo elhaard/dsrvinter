@@ -131,7 +131,7 @@ div.baadinfo.min_baad div.baad_header {
 }
 
 div.baadinfo.hidden_boat {
-   border-style: dashed;
+   border: 4px dashed #ccc;
 }
 
 div.baad_deltagere {
