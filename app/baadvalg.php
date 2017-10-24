@@ -212,6 +212,14 @@ if (isset($user)) {
     // echo "<pre>" . print_r($_POST, true) . "</pre><br/>\n";
 
     foreach( $baade as $c_baad ) {
+      $hidden_class='';
+      if ($c_baad['hidden']) {
+      	 if ($user['is_admin']) {
+	    $hidden_class="hidden_boat";
+	 } else {
+      	   break;
+	 }
+      }
       $c_tilmeldte = $tilmeldte[ $c_baad['ID'] ];
       $antal = 0;
       $timer = 0;
@@ -220,7 +228,7 @@ if (isset($user)) {
          $timer += $c_tilmeldt['timer'];
       }
 
-      $class = '';
+      $class = $hidden_class;
       $ledig = false;
       if ( $c_baad['ID'] == $min_baad ) {
            $class .= 'min_baad';
@@ -293,6 +301,9 @@ if (isset($user)) {
 	     if (isset($c_tilmeldt['is_formand']) && $c_tilmeldt['is_formand']) {
                 echo " (bådformand)";
              }
+	     if ($user['is_admin'] && (!isset($c_tilmeldt['wished_boat']) or $c_tilmeldt['wished_boat'] != $c_baad['ID'])) {
+	     	echo " (tvangstilmeldt)";
+	     }
              echo "</li>\n";
           }
           echo "</ul>\n</div>";

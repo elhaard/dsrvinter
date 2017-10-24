@@ -23,6 +23,7 @@ CREATE TABLE `baad` (
   `beskrivelse` text COLLATE utf8_danish_ci NOT NULL,
   `periode` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `max_timer` int(10) unsigned NOT NULL,
+  `hidden` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `navn` (`navn`),
   KEY `type` (`type`),
@@ -86,9 +87,9 @@ CREATE TABLE `person` (
   KEY `baad` (`baad`),
   KEY `kategori_2` (`kategori`),
   KEY `person_ibfk_3` (`wished_boat`),
-  CONSTRAINT `person_ibfk_3` FOREIGN KEY (`wished_boat`) REFERENCES `baad` (`ID`) ON UPDATE CASCADE,
-  CONSTRAINT `person_ibfk_1` FOREIGN KEY (`kategori`) REFERENCES `roer_kategori` (`ID`) ON UPDATE CASCADE,
-  CONSTRAINT `person_ibfk_2` FOREIGN KEY (`baad`) REFERENCES `baad` (`ID`) ON UPDATE CASCADE
+  CONSTRAINT `person_ibfk_3` FOREIGN KEY (`wished_boat`) REFERENCES `baad` (`ID`) ON UPDATE SET NULL ON DELETE SET NULL,
+  CONSTRAINT `person_ibfk_1` FOREIGN KEY (`kategori`) REFERENCES `roer_kategori` (`ID`) ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT `person_ibfk_2` FOREIGN KEY (`baad`) REFERENCES `baad` (`ID`) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

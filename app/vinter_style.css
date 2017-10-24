@@ -106,6 +106,7 @@ div.baadinfo.ledig {
    border-color: #6a6;
 }
 
+
 div.baadinfo.ledig div.baad_header {
    background-color: #6a6;
 }
@@ -127,6 +128,10 @@ div.baadinfo.min_baad {
 
 div.baadinfo.min_baad div.baad_header {
    background-color: #dd6;
+}
+
+div.baadinfo.hidden_boat {
+   border-style: dashed;
 }
 
 div.baad_deltagere {

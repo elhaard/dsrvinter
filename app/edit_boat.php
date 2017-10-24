@@ -79,8 +79,10 @@ if (isset($user) && $user['is_admin']) {
         
         <label for="description">Beskrivelse:</label><br/>
         <textarea rows="10" cols="74" name="description" id="description"><?= $edit ? htmlspecialchars($boat['beskrivelse']) : ''?></textarea>
-        <br/><br/>
-        
+        <br/>
+
+	<label for="hidden">Skjult båd</label>
+	<input name="hidden" id="hidden" type="checkbox" value="1" <?= $boat['hidden'] ? 'checked="checked"' : ''?> /><br/><br/>
         <input type="submit" value="<?= $edit ? 'Gem' : 'Opret' ?>"/>
     </form>
     

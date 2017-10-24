@@ -37,14 +37,16 @@ if (isset($user) && $user['is_admin']) {
 	  }
 	} else if ($action == 'edit_boat') {
 	  if (isset($_POST['boatID']) && $boatID = (int) $_POST['boatID']) {
-		$sth = $link->prepare("UPDATE baad SET navn = ?, type = ?, periode = ?, max_timer = ?, beskrivelse = ? WHERE ID = ?");
+		$sth = $link->prepare("UPDATE baad SET navn = ?, type = ?, periode = ?, max_timer = ?, beskrivelse = ?, hidden = ? WHERE ID = ?");
 		if ($sth) {
-		  $sth->bind_param("sisisi",
+		  $hidden = isset($_POST['hidden']) && $_POST['hidden'] == 1 ? 1 : 0;
+		  $sth->bind_param("sisisii",
 		  		            $_POST['name'],
 		  					$newTypeID ? $newTypeID : $_POST['type'],
 		  					$_POST['period'],
 		  					$_POST['hours'],
 		  					$_POST['description'],
+							$hidden,
 		  		            $boatID
 		  		);
 		  $res = $sth->execute();
