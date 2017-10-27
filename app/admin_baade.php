@@ -98,10 +98,8 @@ if (isset($user) && $user['is_admin']) {
     $res->close();
 
     // Find minimum timetal
-    $res = $link->query("SELECT timer FROM roer_kategori
-                         WHERE timer IS NOT NULL AND timer > 0
-                         ORDER BY timer ASC
-                         LIMIT 1");
+    $res = $link->query("SELECT MIN(hours) as timer FROM person
+                         WHERE hours > 0");
     if ($res) {
         $t = $res->fetch_array();
         if ($t) {
@@ -112,9 +110,8 @@ if (isset($user) && $user['is_admin']) {
     }
 
     // Find tilmeldte
-    $res = $link->query("SELECT p.*, k.timer as timer, k.navn as kategori_navn 
+    $res = $link->query("SELECT p.* 
                           FROM person p 
-                          LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                           WHERE p.baad IS NOT NULL
                           ORDER BY p.navn");
     if ($res) {
@@ -175,7 +172,7 @@ if (isset($user) && $user['is_admin']) {
       $timer = 0;
       foreach ($c_tilmeldte as $c_tilmeldt) {
          $antal++;
-         $timer += $c_tilmeldt['timer'];
+         $timer += $c_tilmeldt['hours'];
       }
 
       $total_tilmeldt_antal += $antal;

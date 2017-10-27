@@ -27,16 +27,6 @@ if (isset($user) && $user['is_admin']) {
             $res->close();
         }
 
-        // Find kategorier
-        $kategorier = array();
-	$res = $link->query("SELECT * from roer_kategori");
-	if ($res) {
-            while ($row = $res->fetch_assoc()) {
-                $kategorier[ strtolower($row['navn']) ] = $row;
-            }
-            $res->close();
-        }
-
         // Find  både
         $baade = array();
 	$res = $link->query("SELECT * FROM baad");
@@ -58,25 +48,18 @@ if (isset($user) && $user['is_admin']) {
           }
           $fields = explode(";", $line);
 
-	  if (count($fields) != 7) {
+	  if (count($fields) != 6) {
 	     $error[] = "Linie $lineno: Forkert antal felter. Springer over...";
              continue;
           }
 	  $medlem_id = (int) trim($fields[0]);
 	  $navn = trim($fields[1]);
           $km = (int) trim($fields[2]);
-          $kategori = strtolower(trim($fields[3]));
-          $timer = (int) trim($fields[4]);
-          $formand_for = strtolower(trim($fields[5]));
-	  $email = strtolower(trim($fields[6]));
+          $timer = (int) trim($fields[3]);
+          $formand_for = strtolower(trim($fields[4]));
+	  $email = strtolower(trim($fields[5]));
 	  if ($medlem_id <= 0) {
 	     $error[] = "Linie $lineno: Intet medlemsnummer. Springer over...";
-             continue;
-          }
-          if (isset($kategorier[$kategori])) {
-             $kategori_id = $kategorier[$kategori]['ID'];
-          } else {
-             $error[] = "Linie $lineno: Ukendt kategori '$kategori'. Springer over $medlem_id/$navn";
              continue;
           }
 	  if (! preg_match("/^[^@]+@[^@]+$/", $email)) {
@@ -100,7 +83,8 @@ if (isset($user) && $user['is_admin']) {
 
 	     $res = $link->query("UPDATE person SET  " .
                                  " navn = '" . $link->escape_string($navn) . 
-                                 "', kategori = " . (int) $kategori_id  .
+                                 "', km = " . (int) $km  .
+                                 "', hours = " . (int) $timer  .
                                  ", email = '" . $link->escape_string($email) .
                                  "', baad = $baad_value" .
                                  " WHERE ID = " . (int) $medlem_id);
@@ -118,10 +102,11 @@ if (isset($user) && $user['is_admin']) {
 	     $baad_value = $formandsbaad ? (int) $formandsbaad : 'NULL';
 	     $pw = generate_password();
 
-	     $res = $link->query("INSERT INTO person (ID, navn, kategori, email, baad, kode) VALUES (" .
+	     $res = $link->query("INSERT INTO person (ID, navn, km, hours, email, baad, kode) VALUES (" .
                                  (int) $medlem_id . ", '" .
                                  $link->escape_string($navn) . "', " . 
-                                 (int) $kategori_id . ", '" .
+                                 (int) $km . ", " .
+                                 (int) $timer . ", '" .
                                  $link->escape_string($email) . "', " .
                                  $baad_value . ", '" .
                                  $link->escape_string($pw) . "')"
@@ -130,7 +115,7 @@ if (isset($user) && $user['is_admin']) {
                 $ok[] = "Oprettede roeren <i>$navn</i> med ID $medlem_id.";
 		$roere['m' . $medlem_id] = array( 'ID' => $medlem_id,
                                                   'navn' => $navn,
-                                                  'kategori' => $kategori_id,
+                                                  'hours' => $timer,
                                                   'email' => $email
                                                 );
 
@@ -177,11 +162,11 @@ if (isset($user) && $user['is_admin']) {
 
   ?>
   <p>Her kan du indsætte en liste af roere, som skal oprettes. Formatet er:<br/>
-  &nbsp;&nbsp;<code>medlemsnummer;navn;kilometer;kategori;timer;bådformand for;email</code><br/>
+  &nbsp;&nbsp;<code>medlemsnummer;navn;kilometer;timer;bådformand for;email</code><br/>
   <br/>
   Eksempel:<br/>
-  &nbsp;&nbsp;<code>8686;Jørgen Elgaard Larsen;1024;D;22;;jel@elgaard.net</code><br/>
-  &nbsp;&nbsp;<code>6096;Anne Yde;205;B;12;Hjalte;anne.yde@mail.tele.dk</code></p>
+  &nbsp;&nbsp;<code>8686;Jørgen Elgaard Larsen;1024;22;;jel@elgaard.net</code><br/>
+  &nbsp;&nbsp;<code>6096;Anne Yde;205;12;Hjalte;aydexx@gmil.com</code></p>
 
   <p>Du skal <b>ikke</b> have kolonneoverskrifter eller gåseøjne!</p>
  

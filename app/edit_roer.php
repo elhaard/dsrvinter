@@ -31,7 +31,8 @@ if (isset($user) && $user['is_admin']) {
                 "navn" => '',
                 "tlf" => '',
                 "email" => '',
-		"timer" => '',
+		"hours" => '',
+                "km" => '',
 		"kode" => '',
 		"is_admin" => 0
                ];
@@ -78,6 +79,14 @@ if (isset($user) && $user['is_admin']) {
 
         <label for="tlf">Telefon:</label>
         <input type="text" id="tlf" name="tlf" size="20" value="<?= $person['tlf'] ?>" /><br/>
+
+
+        <label for="km">Kilometer:</label>
+        <input type="text" id="km" name="km" size="5" value="<?= $person['km'] ?>" /><br/>
+
+        <label for="hours">Timer:</label>
+        <input type="text" id="hours" name="hours" size="5" value="<?= $person['hours'] ?>" /><br/>
+
 
 <?php
       if ($edit) {

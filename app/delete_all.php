@@ -40,10 +40,8 @@ if (isset($user) && $user['is_admin']) {
           if ($link->begin_transaction()) {
             $res =  $link->query("DELETE FROM baadformand")
                  && $link->query("DELETE FROM person WHERE id <> " . (int) $user['ID'])
-                 && $link->query("UPDATE person SET kategori = 0 WHERE ID = " . (int) $user['ID'])
                  && $link->query("DELETE FROM baad")
-                 && $link->query("DELETE FROM baadtype")
-                 && $link->query("DELETE FROM roer_kategori WHERE ID > 0");
+                 && $link->query("DELETE FROM baadtype");
             if ($res && $link->commit()) {
             	echo "<p class=\"ok\">Alt blev slettet</p>\n";
             	echo "<p>Hvis du starter et nyt år, så husk at ændre årstallet under indstillinger.</p>";

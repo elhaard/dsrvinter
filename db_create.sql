@@ -76,38 +76,19 @@ CREATE TABLE `person` (
   `navn` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `tlf` varchar(20) COLLATE utf8_danish_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8_danish_ci DEFAULT NULL,
-  `kategori` int(10) unsigned NOT NULL,
+  `hours` int(10) unsigned NOT NULL,
+  `km` int(10) unsigned NOT NULL,
   `baad` int(10) unsigned DEFAULT NULL,
   `email_sent` int(11) NOT NULL DEFAULT '0',
   `kode` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `is_admin` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `wished_boat` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  KEY `kategori` (`kategori`),
   KEY `baad` (`baad`),
-  KEY `kategori_2` (`kategori`),
   KEY `person_ibfk_3` (`wished_boat`),
   CONSTRAINT `person_ibfk_3` FOREIGN KEY (`wished_boat`) REFERENCES `baad` (`ID`) ON UPDATE SET NULL ON DELETE SET NULL,
-  CONSTRAINT `person_ibfk_1` FOREIGN KEY (`kategori`) REFERENCES `roer_kategori` (`ID`) ON UPDATE CASCADE ON DELETE SET NULL,
   CONSTRAINT `person_ibfk_2` FOREIGN KEY (`baad`) REFERENCES `baad` (`ID`) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `roer_kategori`
---
-
-DROP TABLE IF EXISTS `roer_kategori`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `roer_kategori` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(25) COLLATE utf8_danish_ci NOT NULL,
-  `timer` int(11) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
-
-INSERT INTO `roer_kategori` (`ID`, `navn`, `timer`) VALUES (0,'Administrator',0);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

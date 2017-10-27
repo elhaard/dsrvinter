@@ -51,15 +51,17 @@ if (isset($user) && $user['is_admin']) {
 
 
      } else if ($action == 'edit_rower' && $id) {
-       $sth = $link->prepare("UPDATE person SET navn = ?, email = ?, tlf = ?, kode = ?, is_admin = ? WHERE ID = ?");
+       $sth = $link->prepare("UPDATE person SET navn = ?, email = ?, tlf = ?, kode = ?, hours = ?, km = ?, is_admin = ? WHERE ID = ?");
        $res = false;
        if ($sth) {
          $rower_admin = (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0;
-         $sth->bind_param("ssssii",
+         $sth->bind_param("ssssiiii",
 			  $_POST['navn'],
                 	  $_POST['email'],
 		  	  $_POST['tlf'],
                     	  $_POST['kode'],
+                    	  $_POST['hours'],
+                    	  $_POST['km'],
           		  $rower_admin,
   		          $id
 	       		 );
@@ -72,16 +74,18 @@ if (isset($user) && $user['is_admin']) {
      } else if ($action == 'new_rower') {
        if ($id > 0) {
          $res = false;
-       	 $sth = $link->prepare("INSERT INTO person (ID, navn, email, tlf, kode, is_admin) VALUES (?,?,?,?,?,?)");
+       	 $sth = $link->prepare("INSERT INTO person (ID, navn, email, tlf, kode, hours, km, is_admin) VALUES (?,?,?,?,?,?,?,?)");
          if ($sth) {
            $rower_admin = (isset($_POST['rower_admin']) && $_POST['rower_admin'] == 1) ? 1 : 0;
 	   $pw = generate_password();
-           $sth->bind_param("issssi",
+           $sth->bind_param("issssiii",
                             $id,
 	  		    $_POST['navn'],
 			    $_POST['email'],
 			    $_POST['tlf'],
 			    $pw,
+			    $_POST['hours'],
+			    $_POST['km'],
           		    $rower_admin
 			   );
            $res = $sth->execute();
@@ -124,18 +128,15 @@ if (isset($user) && $user['is_admin']) {
 
 
   // Find roere
-  $res = $link->query("SELECT p.*,
-                              k.timer as timer,
-                              k.navn as kategori_navn
+  $res = $link->query("SELECT p.*
                        FROM person p
-                       LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                        ORDER BY p.navn, p.ID");
   if ($res) {
       while ($prow = $res->fetch_assoc()) {
          $personer[] = $prow;
          if ( $prow['baad'] ) {
             $baadeById[ $prow['baad'] ]['antal']++;
-            $baadeById[ $prow['baad'] ]['timer'] += $prow['timer'];
+            $baadeById[ $prow['baad'] ]['timer'] += $prow['hours'];
          }
       }
       $res->close();
@@ -176,13 +177,13 @@ if (isset($user) && $user['is_admin']) {
     $id = $person['ID'];
 
     $total_antal++;
-    $total_timer += $person['timer'];
+    $total_timer += $person['hours'];
 
     $class = '';
     if ( $person['baad'] ) {
        $class = 'tilmeldt';
        $total_tilmeldt_antal++;
-       $total_tilmeldt_timer += $person['timer'];
+       $total_tilmeldt_timer += $person['hours'];
     } else {
        $class = 'ledig';
     }
@@ -194,7 +195,7 @@ if (isset($user) && $user['is_admin']) {
         <tr class="person_raekke <?=$class?>">
            <td><?=$mark_start?><?=$id?><?=$mark_end?></td>
            <td title="Eget ønske: <?= $person['wished_boat'] ? $baadeById[ $person['wished_boat']]['navn'] : 'intet' ?>"><?=$person['navn']?></td>
-           <td><?=$person['timer']?></td>
+           <td><?=$person['hours']?></td>
            <td><form class="table-button-form" action="admin_roere.php#mark" method="POST">
                  <?=$form_fields?>
                  <input type="hidden" name="action" value="change_rower_boat" />
@@ -211,7 +212,7 @@ if (isset($user) && $user['is_admin']) {
                         $class="optaget overfuld";
                      } elseif ($c_baad['timer']  >= $booking_factor * $c_baad['max_timer']) {
                         $class="optaget";
-                     } elseif ($c_baad['timer'] + $person['timer'] > $booking_factor * $c_baad['max_timer']) {
+                     } elseif ($c_baad['timer'] + $person['hours'] > $booking_factor * $c_baad['max_timer']) {
                         $class="optaget taet-paa";
                      } else {
                         $class="ledig";

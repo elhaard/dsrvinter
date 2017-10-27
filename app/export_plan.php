@@ -47,9 +47,8 @@ if (isset($user) && $user['is_admin']) {
      $res->close();
 
      // Find tilmeldte
-     $res = $link->query("SELECT p.*, k.timer as timer, k.navn as kategori_navn 
+     $res = $link->query("SELECT p.*
                           FROM person p 
-                          LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                           WHERE p.baad IS NOT NULL
                           ORDER BY p.navn");
      if ($res) {
@@ -99,7 +98,7 @@ if (isset($user) && $user['is_admin']) {
                   $c_tilmeldt['navn'],
                   $c_tilmeldt['email'],
                   $c_tilmeldt['tlf'],
-                  $c_tilmeldt['timer'],
+                  $c_tilmeldt['hours'],
                   $c_baad['navn'],
                   $c_baad['periode']
                 );

@@ -64,9 +64,12 @@ if (isset($user)) {
       $res->close();
 
       echo "<p>Omfanget af vintervedligehold afhænger af, hvor mange kilometer, man har roet.</p>";
-      echo "<p>Dine roede kilometer i $year svarer til kategori <b>" . $user['kategori_navn']
-           . "</b>. Det betyder, at du forventes at deltage i vintervedligehold i mindst <b>"
-           . $user['kategori_timer'] . " timer</b>.</p>\n";
+      echo "<p>Dine ";
+      if (isset($user['km']) && $user['km'] > 0) {
+         echo "<b>" . $user['km'] . "</b> ";
+      }
+      echo "roede kilometer svarer til, at du forventes at deltage i vintervedligehold i mindst <b>"
+           . $user['hours'] . " timer</b>\n</p>\n";
   }
   echo "</div>\n";
 
@@ -91,9 +94,8 @@ if (isset($user)) {
         $ny_baad = (int) trim($_POST['valgt_baad']);
 
 	if ($ny_baad > 0) {
-	   $time_res = $link->query("SELECT IFNULL(SUM(k.timer),0) FROM
+	   $time_res = $link->query("SELECT IFNULL(SUM(p.hours),0) FROM
                                      person p
-                                     JOIN roer_kategori k ON (k.ID = p.kategori)
 				     WHERE p.baad = " . (int) $ny_baad);
            if ($time_res) {
               $time_row = $time_res->fetch_array();
@@ -103,7 +105,7 @@ if (isset($user)) {
 		if ($ledig_res) {
 		   $baadinfo = $ledig_res->fetch_assoc();
 		   if (isset($baadinfo)) {
-			if ($user['kategori_timer'] + $brugte_timer <= $booking_factor * $baadinfo['max_timer']) {
+			if ($user['hours'] + $brugte_timer <= $booking_factor * $baadinfo['max_timer']) {
 			   if ($link->query("UPDATE person SET wished_boat = " . (int) $ny_baad . ", baad = " . (int) $ny_baad . " WHERE ID = " . (int) $user['ID'] )) {
 			      echo "<p class=\"ok\">Din tilmelding er gemt.</p>\n";
                               $user['baad'] = $ny_baad;
@@ -177,9 +179,8 @@ if (isset($user)) {
     $res->close();
 
     // Find tilmeldte
-    $res = $link->query("SELECT p.*, k.timer as timer, k.navn as kategori_navn 
+    $res = $link->query("SELECT p.*
                           FROM person p 
-                          LEFT JOIN roer_kategori k ON (p.kategori = k.ID)
                           WHERE p.baad IS NOT NULL
                           ORDER BY p.navn");
     if ($res) {
@@ -227,14 +228,14 @@ if (isset($user)) {
       $timer = 0;
       foreach ($c_tilmeldte as $c_tilmeldt) {
          $antal++;
-         $timer += $c_tilmeldt['timer'];
+         $timer += $c_tilmeldt['hours'];
       }
 
       $class = $hidden_class;
       $ledig = false;
       if ( $c_baad['ID'] == $min_baad ) {
            $class .= 'min_baad';
-      } elseif ( $timer + $user['kategori_timer'] <= $booking_factor * $c_baad['max_timer']) {
+      } elseif ( $timer + $user['hours'] <= $booking_factor * $c_baad['max_timer']) {
            $class .= ' ledig';
            $ledig = true;
       } else {

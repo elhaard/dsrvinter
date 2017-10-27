@@ -39,7 +39,7 @@ if (isset($user) && $user['is_admin']) {
     		array_push($categories, $row);
     	}
     } else {
-      echo "<p class=\"error\">Kunne ikke finde kategorier: " . $link->error . "</p>";
+      echo "<p class=\"error\">Kunne ikke finde bådtyper: " . $link->error . "</p>";
     }
 
 ?>
