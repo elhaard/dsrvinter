@@ -220,7 +220,7 @@ if (isset($user)) {
 	    $hidden_class="hidden_boat ";
 	    $hidden_text=' (skjult båd)';
 	 } else {
-      	   break;
+      	   continue;
 	 }
       }
       $c_tilmeldte = $tilmeldte[ $c_baad['ID'] ];
