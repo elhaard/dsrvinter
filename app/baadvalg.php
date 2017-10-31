@@ -127,19 +127,19 @@ if (isset($user)) {
 
 
   $min_baad = 0;
-  if (!$formand) {
-    if ($user['baad']) {
-      	$res = $link->query("SELECT * FROM baad WHERE ID = " . (int) $user['baad']);
-	if ($res) {
-	   $baad = $res->fetch_assoc();
-	   $res->close();
-        } else {
-           echo "<p class=\"error\">Kunne ikke finde oplysninger om din båd</p>";
-        }
-    }
-
-
+  if ($user['baad']) {
+    $res = $link->query("SELECT * FROM baad WHERE ID = " . (int) $user['baad']);
+      if ($res) {
+         $baad = $res->fetch_assoc();
+	 $res->close();
+      } else {
+         echo "<p class=\"error\">Kunne ikke finde oplysninger om din båd</p>";
+      }
+  
     if (isset($baad)) {
+      $min_baad = $baad['ID'];
+
+      if (!$formand) {
       ?>
       <div id="min-baadtilmelding">
          <p>Du er tilmeldt vintervedligehold på båden <b><?= $baad['navn'] ?></b>.<br/>
@@ -148,8 +148,8 @@ if (isset($user)) {
          <p>Hvis du hellere vil på en anden båd, så kan du vælge en anden båd herunder.</p>
       </div>
       <?php
-      $min_baad = $baad['ID'];
-    } else {
+      }
+    } else if (!$formand) {
       ?>
       <div id="ikke-tilmeldt">
          <p>Du er endnu ikke tilmeldt en båd. Du kan tilmelde dig herunder.</p>
