@@ -24,7 +24,7 @@ if (isset($user) && $user['is_admin']) {
             )
       ) {
         $show_input = false;
-        
+
         // Find eksisterende både
         $baade = array();
         $res = $link->query("SELECT * from baad");
@@ -55,7 +55,7 @@ if (isset($user) && $user['is_admin']) {
         	$input = fread($fh, filesize($file));
         	fclose($fh);
         }
-        
+
         $lines = csvParse($input);
         $lineno = 0;
         foreach ($lines as $fields) {
@@ -75,6 +75,8 @@ if (isset($user) && $user['is_admin']) {
              $saeson = "efterår";
           } elseif ($saeson == 'f' || $saeson == 'F'|| preg_match("/forår/i", $saeson)) {
              $saeson = "forår";
+          } elseif ($saeson == 'v' || $saeson == 'V'|| preg_match("/vinter/i", $saeson)) {
+             $saeson = "hele vinteren";
           } else {
              $error[] = "Linie $lineno: Ukendt sæson '$saeson'. Indsætter alligevel";
           }
@@ -100,39 +102,54 @@ if (isset($user) && $user['is_admin']) {
              $id = $baade[strtolower($navn)]['ID'];
 
              $res = $link->query("UPDATE baad SET type = " . (int) $type_id .
-                                 ", navn = '" . $link->escape_string($navn) . 
+                                 ", navn = '" . $link->escape_string($navn) .
                                  "', max_timer = " . (int) $timer  .
                                  ", beskrivelse = '" . $link->escape_string($beskrivelse) .
-                                 "', periode = '" . $link->escape_string($saeson) .
                                  "' WHERE ID = " . (int) $id);
              if ($res) {
                 $ok[] = "Linie $lineno: <i>$navn</i> eksisterer allerede. Opdaterer";
              } else {
                 $error[] = "Linie $lineno: Kunne ikke opdatere eksisterende båd <i>$navn</i>: " . $link->error;
              }
-          } else {
-            $res = $link->query("INSERT INTO baad (type, navn, max_timer, beskrivelse, periode) VALUES (" .
-                                 (int) $type_id . ", '" .
-                                 $link->escape_string($navn) . "', " . 
-                                 (int) $timer . ", '" .
-                                 $link->escape_string($beskrivelse) . "', '" .
-                                 $link->escape_string($saeson) . "')"
-                               );
-             if ($res) {
-                $id = $link->insert_id;
-                $ok[] = "Oprettede båden <i>$navn</i> med ID $id.";
-                $baade[strtolower($navn)] = array( 'ID' => $id,
-                                                  'navn' => $navn,
-                                                  'max_timer' => $timer,
-                                                  'periode' => $saeson,
-                                                  'type' => $type_id,
-                                                  'beskrivelse' => $beskrivelse );
-             } else {
-                $error[] = "Linie $lineno: Kunne ikke oprette båden <i>$navn</i>: " . $link->error;
+             $res = $link->query("UPDATE team SET PERIOD = '" .
+                                  $link->escape_string($saeson) .
+                                  "' WHERE ID = " .
+                                  (int) $baade[strtolower($navn)]['team']);
+             if (!$res) {
+               $error[] = "Linie $lineno: Kunne ikke sætte opdatere periode for bådhold for <i>$navn</i>: " . $link->error;
              }
+          } else {
+            $res = $link->query("INSERT INTO team (period) VALUES ('" .
+                                 $link->escape_string($saeson) .
+                                 "')" );
+            if ($res) {
+              $teamID = $link->insert_id;
+
+              $res = $link->query("INSERT INTO baad (type, navn, max_timer, team, beskrivelse) VALUES (" .
+                                 (int) $type_id . ", '" .
+                                 $link->escape_string($navn) . "', " .
+                                 (int) $timer . ", " .
+                                 (int) $teamID . ", '" .
+                                 $link->escape_string($beskrivelse) . "')"
+                               );
+              if ($res) {
+                 $id = $link->insert_id;
+                 $ok[] = "Oprettede båden <i>$navn</i> med ID $id, team $teamID";
+                 $baade[strtolower($navn)] = array( 'ID' => $id,
+                                                    'navn' => $navn,
+                                                    'max_timer' => $timer,
+                                                    'type' => $type_id,
+                                                    'team' => $teamID,
+                                                    'beskrivelse' => $beskrivelse );
+              } else {
+                 $error[] = "Linie $lineno: Kunne ikke oprette båden <i>$navn</i>: " . $link->error;
+              }
+            } else {
+              $error[] = "Linie $lineno: Kunne ikke oprette bådhold til båden <i>$navn</i>: " . $link->error;
+            }
           }
         }
-    
+
         if (count($error) > 0) {
           echo "<p class=\"error\">Der var fejl under importen: <ul>";
           foreach ($error as $err) {
@@ -160,10 +177,10 @@ if (isset($user) && $user['is_admin']) {
   &nbsp;&nbsp;<code>Nanna;4-åres inrigger;300;f;Skal blot pletlakeres</code></p>
 
   <p>Du skal <b>ikke</b> have kolonneoverskrifter!</p>
-  <p>Det er vigtigt, at den samme bådtype er stavet ens hver gang - ellers oprettes to forskellige bådtyper. Sæson kan være <b><code>f</code></b> (forår)
-   eller <b><code>e</code></b> (efterår).</p>
+  <p>Det er vigtigt, at den samme bådtype er stavet ens hver gang - ellers oprettes to forskellige bådtyper. Sæson kan være <b><code>f</code></b> (forår),
+    <b><code>e</code></b> (efterår) eller <b><code>v</code></b> (hele vinteren).</p>
 
-    <form action="import_baade.php" method="post"> 
+    <form action="import_baade.php" method="post">
        <input type="hidden" name="import_boats" value="1" />
        <?= $form_fields ?>
 
@@ -180,15 +197,15 @@ if (isset($user) && $user['is_admin']) {
          <br/>
          <input type="submit" value="Upload fil med både" />
     </form>
-    
+
     </p>
-    
+
   <?php
 
     }
 
     echo "<form action=\"baadvalg.php\" method=\"post\">$form_fields<input type=\"submit\" value=\"Tilbage til oversigten\"/></form>\n";
-   
+
 }
 include("inc/footer.php");
 ?>

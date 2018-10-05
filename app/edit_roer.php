@@ -31,10 +31,10 @@ if (isset($user) && $user['is_admin']) {
                 "navn" => '',
                 "tlf" => '',
                 "email" => '',
-		"hours" => '',
+                "hours" => '',
                 "km" => '',
-		"kode" => '',
-		"is_admin" => 0
+		            "kode" => '',
+		            "is_admin" => 0
                ];
      if ($edit) {
        $res = $link->query("SELECT * FROM person WHERE ID = " . $personID);
@@ -93,15 +93,15 @@ if (isset($user) && $user['is_admin']) {
 ?>
         <label for="kode">Kode:</label>
         <input type="text" name="kode" id="kode" size="20" value="<?= $person['kode'] ?>" /><br/>
-  
+
 <?php
       }
-?>        
+?>
 
         <label for="rower_admin">Administrator:</label>
         <input type="checkbox" id="rower_admin" name="rower_admin" value="1" <?= $person['is_admin'] ? 'checked="checked"' : '' ?> /><br/>
 
-        
+
         <input type="submit" value="<?= $edit ? 'Gem' : 'Opret' ?>"/>
     </form>
     <form action="admin_roere.php" method="post"><?= $form_fields ?><input type="submit" value="Annuller" /></form>
@@ -114,5 +114,3 @@ if (isset($user) && $user['is_admin']) {
 echo "<form action=\"baadvalg.php\" method=\"post\">$form_fields<input type=\"submit\" value=\"Tilbage til oversigten\" /></form>\n";
 include("inc/footer.php");
 ?>
-
-

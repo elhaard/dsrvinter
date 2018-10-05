@@ -13,48 +13,16 @@
 -- Table structure for table `baad`
 --
 
-DROP TABLE IF EXISTS `baad`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `baad` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `navn` varchar(135) COLLATE utf8_danish_ci NOT NULL,
-  `type` int(10) unsigned NOT NULL,
-  `beskrivelse` text COLLATE utf8_danish_ci NOT NULL,
-  `periode` varchar(255) COLLATE utf8_danish_ci NOT NULL,
-  `max_timer` int(10) unsigned NOT NULL,
-  `hidden` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `navn` (`navn`),
-  KEY `type` (`type`),
-  CONSTRAINT `baad_ibfk_1` FOREIGN KEY (`type`) REFERENCES `baadtype` (`ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `baadformand`
---
-
 DROP TABLE IF EXISTS `baadformand`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `baadformand` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `baad` int(10) unsigned NOT NULL,
-  `formand` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `baad` (`baad`),
-  KEY `formand` (`formand`),
-  CONSTRAINT `baadformand_ibfk_1` FOREIGN KEY (`baad`) REFERENCES `baad` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `baadformand_ibfk_2` FOREIGN KEY (`formand`) REFERENCES `person` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `person`;
+DROP TABLE IF EXISTS `baad`;
+DROP TABLE IF EXISTS `team`;
+DROP TABLE IF EXISTS `baadtype`;
 
 --
 -- Table structure for table `baadtype`
 --
 
-DROP TABLE IF EXISTS `baadtype`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `baadtype` (
@@ -64,11 +32,49 @@ CREATE TABLE `baadtype` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+--
+-- Table structure for table `team`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `team` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_danish_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_danish_ci NOT NULL DEFAULT '',
+  `period` varchar(255) COLLATE utf8_danish_ci NOT NULL,
+  `hidden` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `baad` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `navn` varchar(135) COLLATE utf8_danish_ci NOT NULL,
+  `type` int(10) unsigned NOT NULL,
+  `team` int(10) unsigned NOT NULL,
+  `beskrivelse` text COLLATE utf8_danish_ci NOT NULL,
+  `max_timer` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `navn` (`navn`),
+  KEY `type` (`type`),
+  KEY `team` (`team`),
+  CONSTRAINT `baad_ibfk_1` FOREIGN KEY (`type`) REFERENCES `baadtype` (`ID`) ON UPDATE CASCADE,
+  CONSTRAINT `baad_ibfk_2` FOREIGN KEY (`team`) REFERENCES `team` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
 --
 -- Table structure for table `person`
 --
 
-DROP TABLE IF EXISTS `person`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `person` (
@@ -78,18 +84,38 @@ CREATE TABLE `person` (
   `email` varchar(255) COLLATE utf8_danish_ci DEFAULT NULL,
   `hours` int(10) unsigned NOT NULL,
   `km` int(10) unsigned NOT NULL,
-  `baad` int(10) unsigned DEFAULT NULL,
+  `team` int(10) unsigned DEFAULT NULL,
   `email_sent` int(11) NOT NULL DEFAULT '0',
   `kode` varchar(255) COLLATE utf8_danish_ci NOT NULL,
   `is_admin` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `wished_boat` int(10) unsigned DEFAULT NULL,
+  `wished_team` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  KEY `baad` (`baad`),
-  KEY `person_ibfk_3` (`wished_boat`),
-  CONSTRAINT `person_ibfk_3` FOREIGN KEY (`wished_boat`) REFERENCES `baad` (`ID`) ON UPDATE SET NULL ON DELETE SET NULL,
-  CONSTRAINT `person_ibfk_2` FOREIGN KEY (`baad`) REFERENCES `baad` (`ID`) ON UPDATE CASCADE ON DELETE SET NULL
+  KEY `team` (`team`),
+  KEY `person_ibfk_3` (`wished_team`),
+  CONSTRAINT `person_ibfk_3` FOREIGN KEY (`wished_team`) REFERENCES `team` (`ID`) ON UPDATE SET NULL ON DELETE SET NULL,
+  CONSTRAINT `person_ibfk_2` FOREIGN KEY (`team`) REFERENCES `team` (`ID`) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_danish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `baadformand`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `baadformand` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `team` int(10) unsigned NOT NULL,
+  `formand` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `team` (`team`),
+  KEY `formand` (`formand`),
+  CONSTRAINT `baadformand_ibfk_1` FOREIGN KEY (`team`) REFERENCES `team` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `baadformand_ibfk_2` FOREIGN KEY (`formand`) REFERENCES `person` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 
 --
 -- Table structure for table `settings`
@@ -129,4 +155,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-

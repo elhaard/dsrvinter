@@ -22,25 +22,26 @@ if (isset($user) && $user['is_admin']) {
        <?=$form_fields?>
        <input type="hidden" name="action" value="really_delete_all" />
        <input type="hidden" name="random" value="<?=$random?>" />
-          
+
        For at være helt sikker på, at du mener det, skal du indtaste tallet <b><?=$random?></b> i feltet herunder:
        <br /><br />
        <input type="text" name="check" size="4"/>
        <br />
        <input type="submit" value="Ja, slet virkelig alt!" />
      </form>
-     <hr/>    	
-<?php      	
+     <hr/>
+<?php
      } elseif ( $action="really_delete_all") {
        if (   isset($_POST['check'])
      	   && isset($_POST['random'])
      	   && $_POST['check']
      	   && $_POST['check'] == $_POST['random'] ) {
-     		
+
           if ($link->begin_transaction()) {
             $res =  $link->query("DELETE FROM baadformand")
                  && $link->query("DELETE FROM person WHERE id <> " . (int) $user['ID'])
                  && $link->query("DELETE FROM baad")
+                 && $link->query("DELETE FROM team")
                  && $link->query("DELETE FROM baadtype");
             if ($res && $link->commit()) {
             	echo "<p class=\"ok\">Alt blev slettet</p>\n";
@@ -56,12 +57,12 @@ if (isset($user) && $user['is_admin']) {
           }
        } else {
        	echo "<p class=\"error\">Du har ikke indtastet det rigtige tal</p><p>Gå tilbage og prøv igen</p>\n";
-       }       
+       }
      } else {
          echo "<p class=\"error\">Ukendt action: '$action'</p>\n";
      }
-  }  
-}  
+  }
+}
 echo "<form action=\"baadvalg.php\" method=\"post\">$form_fields<input type=\"submit\" value=\"Tilbage til oversigten\" /></form>\n";
 include("inc/footer.php");
 ?>
