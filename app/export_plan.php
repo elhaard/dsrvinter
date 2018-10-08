@@ -10,7 +10,7 @@ include_once("inc/db.php");
 $result = array();
 
 if (isset($_POST["medlemsnummer"]) && isset($_POST["password"])){
-  $medlemsnummer=trim($_POST["medlemsnummer"]);  
+  $medlemsnummer=trim($_POST["medlemsnummer"]);
   $kode=trim($_POST["password"]);
 
   $res = $link->query("SELECT * FROM person WHERE ID = " . (int) $medlemsnummer . " AND kode = '" . $link->escape_string($kode) . "'");
@@ -26,50 +26,53 @@ if (isset($user) && $user['is_admin']) {
 
   $year = get_setting('year');
 
-  $baade = array();
+  $teams = array();
   $tilmeldte = array();
   $personer = array();
   $formaend = array();
   $minimum_timer = 1;
 
-  // Find baade
-  $res = $link->query("SELECT *
-                        FROM baad
-                        ORDER BY navn, ID");
+  // Find teams
+  $res = $link->query("SELECT t.* FROM team t,
+                       GROUP_CONCAT(b.navn ORDER BY b.navn SEPARATOR '/') as boat_names
+                       SUM(b.max_timer) as max_hours
+                       LEFT JOIN baad b ON t.ID = b.team
+                       GROUP BY t.*
+                       ORDER BY boat_names, t.ID"");
   if (!$res) {
-     echo "Fejl: Kunne ikke finde bådliste!!!\n";
+     echo "Fejl: Kunne ikke finde bådholdsliste!!!\n";
   } else {
      while ($brow = $res->fetch_assoc()) {
-        $baade[] = $brow;
-	$tilmeldte[ $brow['ID'] ] = array();
-	$formaend[ $brow['ID'] ] = array();
+        $teams[] = $brow;
+	      $tilmeldte[ $brow['ID'] ] = array();
+	      $formaend[ $brow['ID'] ] = array();
      }
      $res->close();
 
      // Find tilmeldte
      $res = $link->query("SELECT p.*
-                          FROM person p 
-                          WHERE p.baad IS NOT NULL
+                          FROM person p
+                          WHERE p.team IS NOT NULL
                           ORDER BY p.navn");
      if ($res) {
         while ($prow = $res->fetch_assoc()) {
            $personer[ $prow['ID'] ] = $prow;
-	   $tilmeldte[ $prow['baad'] ][] =& $personer[ $prow['ID'] ]; 
+	         $tilmeldte[ $prow['team'] ][] = $personer[ $prow['ID'] ];
         }
         $res->close();
      } else {
         echo "Fejl: Kunne ikke finde tilmeldte!!!\n";
      }
 
-    
+
      // Find formaend
-     $res = $link->query("SELECT p.*, f.baad as formandsbaad 
-                          FROM person p 
+     $res = $link->query("SELECT p.*, f.team as formandsbaad
+                          FROM person p
                           JOIN baadformand f ON (f.formand = p.ID)
                           ");
      if ($res) {
         while ($frow = $res->fetch_assoc()) {
-	   $formaend[ $frow['formandsbaad' ] ][] = $frow;
+       	   $formaend[ $frow['formandsbaad' ] ][] = $frow;
            $personer[ $frow['ID'] ]['is_formand'] = 1;
         }
         $res->close();
@@ -77,18 +80,18 @@ if (isset($user) && $user['is_admin']) {
         echo "Fejl: Kunne ikke finde bådformænd!!!";
      }
 
-     echo "formand;medlemsnummer;navn;email;telefon;timer;båd;sæson\n";
+     echo "formand;medlemsnummer;navn;email;telefon;timer;bådhold;sæson\n";
 
-     foreach( $baade as $c_baad ) {
-       $baadID = $c_baad['ID'];
-       $c_tilmeldte = $tilmeldte[ $baadID ];
+     foreach( $teams as $c_team ) {
+       $teamID = $c_team['ID'];
+       $c_tilmeldte = $tilmeldte[ $teamID ];
 
 
 
        printf("\n%s - %s. Vurderet til %d timer\n",
-              $c_baad['navn'],
-              ucfirst($c_baad['periode']),
-              $c_baad['max_timer']
+              $c_team['boat_names'],
+              ucfirst($c_team['period']),
+              $c_team['max_hours']
              );
 
        foreach ($c_tilmeldte as $c_tilmeldt) {
@@ -99,8 +102,8 @@ if (isset($user) && $user['is_admin']) {
                   $c_tilmeldt['email'],
                   $c_tilmeldt['tlf'],
                   $c_tilmeldt['hours'],
-                  $c_baad['navn'],
-                  $c_baad['periode']
+                  $c_team['boat_names'],
+                  $c_team['period']
                 );
        }
     }

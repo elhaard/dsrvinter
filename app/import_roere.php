@@ -69,24 +69,24 @@ if (isset($user) && $user['is_admin']) {
 	  $formandsbaad = 0;
 	  if ($formand_for != '') {
 	     if (isset($baade[$formand_for])) {
-		$formandsbaad = $baade[$formand_for]['ID'];
+      		$formandsteam = $baade[$formand_for]['team'];
              } else {
                 $error[] = "Linie $lineno: Ukendt båd '$formand_for' - ignorer bådformandsrolle";
              }
           }
 
 	  if (isset($roere['m' . $medlem_id])) {
-             $baad_value = $formandsbaad ? $formandsbaad : $roere['m' . $medlem_id]['baad'];
-	     if (! $baad_value) {
-	        $baad_value = 'NULL';
+             $team_value = $formandsteam ? $formandsteam : $roere['m' . $medlem_id]['team'];
+	     if (! $team_value) {
+	        $team_value = 'NULL';
              }
 
 	     $res = $link->query("UPDATE person SET  " .
-                                 " navn = '" . $link->escape_string($navn) . 
+                                 " navn = '" . $link->escape_string($navn) .
                                  "', km = " . (int) $km  .
                                  "', hours = " . (int) $timer  .
                                  ", email = '" . $link->escape_string($email) .
-                                 "', baad = $baad_value" .
+                                 "', team = $team_value" .
                                  " WHERE ID = " . (int) $medlem_id);
              if ($res) {
                 $ok[] = "Linie $lineno: <i>$medlem_id ($navn)</i> eksisterer allerede. Opdaterer";
@@ -99,16 +99,16 @@ if (isset($user) && $user['is_admin']) {
              }
 
           } else {
-	     $baad_value = $formandsbaad ? (int) $formandsbaad : 'NULL';
+	     $team_value = $formandsteam ? (int) $formandsteam : 'NULL';
 	     $pw = generate_password();
 
-	     $res = $link->query("INSERT INTO person (ID, navn, km, hours, email, baad, kode) VALUES (" .
+	     $res = $link->query("INSERT INTO person (ID, navn, km, hours, email, team, kode) VALUES (" .
                                  (int) $medlem_id . ", '" .
-                                 $link->escape_string($navn) . "', " . 
+                                 $link->escape_string($navn) . "', " .
                                  (int) $km . ", " .
                                  (int) $timer . ", '" .
                                  $link->escape_string($email) . "', " .
-                                 $baad_value . ", '" .
+                                 $team_value . ", '" .
                                  $link->escape_string($pw) . "')"
                                );
              if ($res) {
@@ -124,14 +124,14 @@ if (isset($user) && $user['is_admin']) {
                 continue;
              }
           }
-          if ($formandsbaad) {
-            $res = $link->query("INSERT INTO baadformand (formand, baad) VALUES ($medlem_id, $formandsbaad)");
+          if ($formandsteam) {
+            $res = $link->query("INSERT INTO baadformand (formand, team) VALUES ($medlem_id, $formandsteam)");
 	    if (!$res) {
                $error[] = "Linie $lineno: Kunne ikke sætte <i>$medlem_id ($navn)</i> som bådformand: " . $link->error;
             }
           }
         }
-    
+
         if (count($error) > 0) {
 	  echo "<p class=\"error\">Der var fejl under importen: <ul>";
 	  foreach ($error as $err) {
@@ -145,7 +145,7 @@ if (isset($user) && $user['is_admin']) {
 	    echo "<li>$msg</li>\n";
           }
 	  echo "</ul></p>\n";
-	  
+
          ?>
          <p>Husk at sende invitationer til roerne, så de kan få deres password. Du kan gøre det nu eller senere.</p>
          <form action="send_mails.php" method="post" onsubmit="return confirm('Vil du sende invitationer til alle, der ikke allerede har fået invitation?')">
@@ -169,8 +169,8 @@ if (isset($user) && $user['is_admin']) {
   &nbsp;&nbsp;<code>6096;Anne Yde;205;12;Hjalte;aydexx@gmil.com</code></p>
 
   <p>Du skal <b>ikke</b> have kolonneoverskrifter eller gåseøjne!</p>
- 
-    <form action="import_roere.php" method="post"> 
+
+    <form action="import_roere.php" method="post">
        <input type="hidden" name="import_rowers" value="1" />
        <?= $form_fields ?>
        <textarea name="new_rowers" cols="100" rows="20" placeholder="Indsæt oplysninger her"></textarea>
@@ -183,7 +183,7 @@ if (isset($user) && $user['is_admin']) {
     }
 
     echo "<form action=\"baadvalg.php\" method=\"post\">$form_fields<input type=\"submit\" value=\"Tilbage til oversigten\"/></form>\n";
-   
+
 }
 include("inc/footer.php");
 ?>

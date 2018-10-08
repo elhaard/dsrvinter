@@ -19,15 +19,15 @@ if (isset($user) && $user['is_admin']) {
      $action = trim($_POST['action']);
 
      if ($action == 'change_rower_boat' && $id) {
-	$baadID = isset($_POST['baadID']) ? (int) trim($_POST['baadID']) : 0;
+	      $teamID = isset($_POST['teamID']) ? (int) trim($_POST['teamID']) : 0;
         $be_formand = ( isset($_POST['be_formand']) && trim($_POST['be_formand']) );
-	   $newBoat = ( $baadID > 0 ) ? (int) $baadID : 'NULL';
-           $res = $link->query("UPDATE person SET baad = $newBoat WHERE ID = $id LIMIT 1");
+	      $newBoat = ( $teamID > 0 ) ? (int) $teamID : 'NULL';
+           $res = $link->query("UPDATE person SET team = $newBoat WHERE ID = $id LIMIT 1");
            if ($res) {
               $res = $link->query("DELETE FROM baadformand WHERE formand = $id LIMIT 1");
               if ($res) {
                   if ($be_formand) {
-	             $res = $link->query("INSERT INTO baadformand (baad, formand) VALUES ($newBoat, $id)");
+	             $res = $link->query("INSERT INTO baadformand (team, formand) VALUES ($newBoat, $id)");
                      if (!$res) {
                         echo "<p class=\"error\">Kunne ikke sætte ny bådformand</p>\n";
                      }
@@ -104,24 +104,29 @@ if (isset($user) && $user['is_admin']) {
   }
 
 
-  $baade = array();
-  $baadeById = array();
+  $teams = array();
+  $teamsById = array();
   $personer = array();
   $formaend = array();
 
 
-  // Find baade
-  $res = $link->query("SELECT * FROM baad ORDER BY navn, ID");
+  // Find teams
+  $res = $link->query("SELECT t.* FROM team t,
+                       GROUP_CONCAT(b.navn ORDER BY b.navn SEPARATOR '/') as boat_names
+                       SUM(b.max_timer) as max_hours
+                       LEFT JOIN baad b ON t.ID = b.team
+                       GROUP BY t.*
+                       ORDER BY boat_names, t.ID");
 
   if (! $res) {
-     echo "<p class=\"error\">Fejl: Kunne ikke finde bådliste!!!</p>";
+     echo "<p class=\"error\">Fejl: Kunne ikke finde bådholdsliste!!!</p>";
   } else {
     while ($brow = $res->fetch_assoc()) {
         $id = $brow['ID'];
         $brow['antal'] = 0;
         $brow['timer'] = 0;
-        $baadeById[$id] = $brow;
-        $baade[] =& $baadeById[$id];
+        $teamsById[$id] = $brow;
+        $teams[] = $teamsById[$id];
     }
     $res->close();
   }
@@ -134,9 +139,9 @@ if (isset($user) && $user['is_admin']) {
   if ($res) {
       while ($prow = $res->fetch_assoc()) {
          $personer[] = $prow;
-         if ( $prow['baad'] ) {
-            $baadeById[ $prow['baad'] ]['antal']++;
-            $baadeById[ $prow['baad'] ]['timer'] += $prow['hours'];
+         if ( $prow['team'] ) {
+            $baadeById[ $prow['team'] ]['antal']++;
+            $baadeById[ $prow['team'] ]['timer'] += $prow['hours'];
          }
       }
       $res->close();
@@ -152,7 +157,7 @@ if (isset($user) && $user['is_admin']) {
         if (! isset( $formaend[ $fm ] )) {
             $formaend[$fm] = array();
         }
-        $formaend[$fm][ $row['baad'] ] = $row['id'];;
+        $formaend[$fm][ $row['team'] ] = $row['id'];;
      }
      $res->close();
   }
@@ -165,7 +170,7 @@ if (isset($user) && $user['is_admin']) {
         <th>Medlemsnummer</th>
         <th>Navn</th>
         <th>Timer</th>
-        <th>Båd</th>
+        <th>Bådhold</th>
         <td>&nbsp;</td>
      </tr>
     <?php
@@ -180,7 +185,7 @@ if (isset($user) && $user['is_admin']) {
     $total_timer += $person['hours'];
 
     $class = '';
-    if ( $person['baad'] ) {
+    if ( $person['team'] ) {
        $class = 'tilmeldt';
        $total_tilmeldt_antal++;
        $total_tilmeldt_timer += $person['hours'];
@@ -194,36 +199,36 @@ if (isset($user) && $user['is_admin']) {
 
         <tr class="person_raekke <?=$class?>">
            <td><?=$mark_start?><?=$id?><?=$mark_end?></td>
-           <td title="Eget ønske: <?= $person['wished_boat'] ? $baadeById[ $person['wished_boat']]['navn'] : 'intet' ?>"><?=$person['navn']?></td>
+           <td title="Eget ønske: <?= $person['wished_team'] ? $baadeById[ $person['wished_team']]['boat_names'] : 'intet' ?>"><?=$person['navn']?></td>
            <td><?=$person['hours']?></td>
            <td><form class="table-button-form" action="admin_roere.php#mark" method="POST">
                  <?=$form_fields?>
                  <input type="hidden" name="action" value="change_rower_boat" />
                  <input type="hidden" name="personID" value="<?=$id?>" />
                  <input type="hidden" name="mark_person" value="<?=$id?>" />
-                 <select name="baadID">
-                    <option value="0" <?= $person['baad'] ? '' : 'selected="selected"' ?>> <i>-- ingen --</i></option>
+                 <select name="teamID">
+                    <option value="0" <?= $person['team'] ? '' : 'selected="selected"' ?>> <i>-- ingen --</i></option>
            <?php
-              foreach ($baade as $c_baad) {
-                 if ($c_baad['ID'] == $person['baad']) {
-                     echo '<option value="' . $c_baad['ID'] . '" selected="selected" class="selected-boat">' . $c_baad['navn'] . "</option>\n";
+              foreach ($teams as $c_team) {
+                 if ($c_team['ID'] == $person['team']) {
+                     echo '<option value="' . $c_team['ID'] . '" selected="selected" class="selected-boat">' . $c_team['boat_names'] . "</option>\n";
                  } else {
-                     if ($c_baad['timer']  > $booking_factor * $c_baad['max_timer'] + 3 ) {
+                     if ($c_team['timer']  > $booking_factor * $c_team['max_hours'] + 3 ) {
                         $class="optaget overfuld";
-                     } elseif ($c_baad['timer']  >= $booking_factor * $c_baad['max_timer']) {
+                     } elseif ($c_team['timer']  >= $booking_factor * $c_team['max_hours']) {
                         $class="optaget";
-                     } elseif ($c_baad['timer'] + $person['hours'] > $booking_factor * $c_baad['max_timer']) {
+                     } elseif ($c_team['timer'] + $person['hours'] > $booking_factor * $c_team['max_hours']) {
                         $class="optaget taet-paa";
                      } else {
                         $class="ledig";
                      }
-                     echo '<option value="' . $c_baad['ID'] . "\" class=\"$class\">" . $c_baad['navn'] . "</option>\n";
+                     echo '<option value="' . $c_team['ID'] . "\" class=\"$class\">" . $c_team['boat_names'] . "</option>\n";
                  }
               }
            ?>
                  </select>
                  Formand: <input type="checkbox" name="be_formand" value="1" <?= isset($formaend[ $id ]) ? 'checked="checked"' : '' ?> />
-                 <input type="submit" value="Skift båd" />
+                 <input type="submit" value="Skift bådhold" />
                </form>
            </td>
 
